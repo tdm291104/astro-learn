@@ -1,0 +1,260 @@
+name: arxiv_curated_v1
+description: |
+  Hand-curated golden dataset for the RAG retrieval evaluation. 30 grounded questions across 6 arxiv
+  astronomy papers, written by reading each paper directly. Each question targets
+  a specific fact (number, name, method, definition) verifiable by a distinctive
+  substring on the cited page. Mix of types: numeric values, methods, definitions,
+  comparisons. No reference/title/figure-caption questions.
+
+queries:
+  # === llm_astronomy_eval.pdf (Wu et al. 2024) ===
+
+  - id: q01
+    question: What model did Nguyen et al. release as AstroLLaMA?
+    tags: [llm_astronomy_eval, entity, fact]
+    relevant:
+      - doc_id: 7a519c2f-5f4f-51b5-a333-9697776a373a
+        page: 2
+        contains: "AstroLLaMA, a\nLLaMA-2 7B model fine-tuned"
+
+  - id: q02
+    question: Approximately how many astronomy abstracts were used to train AstroLLaMA?
+    tags: [llm_astronomy_eval, numeric]
+    relevant:
+      - doc_id: 7a519c2f-5f4f-51b5-a333-9697776a373a
+        page: 2
+        contains: "over 300,000 astron-\nomy abstracts from arXiv"
+
+  - id: q03
+    question: Which generator LLM does the RAG framework use by default?
+    tags: [llm_astronomy_eval, method]
+    relevant:
+      - doc_id: 7a519c2f-5f4f-51b5-a333-9697776a373a
+        page: 3
+        contains: "currently use gpt-4o as the generator LLM"
+
+  - id: q04
+    question: Which encoder model does the framework use to embed user queries?
+    tags: [llm_astronomy_eval, method]
+    relevant:
+      - doc_id: 7a519c2f-5f4f-51b5-a333-9697776a373a
+        page: 2
+        contains: "bge-small-en-v1.5 as the encoder"
+
+  - id: q05
+    question: How many papers does the RAG system retrieve per query?
+    tags: [llm_astronomy_eval, numeric, method]
+    relevant:
+      - doc_id: 7a519c2f-5f4f-51b5-a333-9697776a373a
+        page: 3
+        contains: "top k = 5 papers by cosine"
+
+  - id: q06
+    question: What is the maximum character length the paper reports for arXiv abstracts?
+    tags: [llm_astronomy_eval, numeric]
+    relevant:
+      - doc_id: 7a519c2f-5f4f-51b5-a333-9697776a373a
+        page: 3
+        contains: "always contain fewer than 1920 characters"
+
+  # === astromlabai.pdf (de Haan et al. 2024) ===
+
+  - id: q07
+    question: What score does AstroSage-Llama-3.1-8B achieve on the AstroMLab-1 benchmark?
+    tags: [astromlabai, numeric, benchmark]
+    relevant:
+      - doc_id: 5d5ebdc2-0578-5b92-8872-7ed18015d3e3
+        page: 1
+        contains: "scores 80 .9% on the AstroMLab-1 benchmark"
+
+  - id: q08
+    question: Approximately how many arXiv preprints from 2007-2024 form the CPT dataset?
+    tags: [astromlabai, numeric]
+    relevant:
+      - doc_id: 5d5ebdc2-0578-5b92-8872-7ed18015d3e3
+        page: 2
+        contains: "Approximately 250,000 arXiv preprints from 2007-"
+
+  - id: q09
+    question: Which OCR system did AstroSage use to convert PDF files for training?
+    tags: [astromlabai, entity, method]
+    relevant:
+      - doc_id: 5d5ebdc2-0578-5b92-8872-7ed18015d3e3
+        page: 2
+        contains: "converted to Mathpix Markdown using Nougat\nOCR"
+
+  - id: q10
+    question: How many GCDs (effective GPUs) were used in AstroSage pretraining?
+    tags: [astromlabai, numeric, infra]
+    relevant:
+      - doc_id: 5d5ebdc2-0578-5b92-8872-7ed18015d3e3
+        page: 2
+        contains: "1472 GCDs"
+
+  - id: q11
+    question: What is the peak learning rate used in AstroSage continued pretraining?
+    tags: [astromlabai, numeric, training]
+    relevant:
+      - doc_id: 5d5ebdc2-0578-5b92-8872-7ed18015d3e3
+        page: 3
+        contains: "Learning rate 1.5e-4"
+
+  - id: q12
+    question: Roughly what percentage of paragraphs did AstroSage filter out by perplexity?
+    tags: [astromlabai, numeric, method]
+    relevant:
+      - doc_id: 5d5ebdc2-0578-5b92-8872-7ed18015d3e3
+        page: 3
+        contains: "approximately 2% of the total\ndata volume"
+
+  - id: q13
+    question: How many high-quality Q&A pairs survived the four-criterion filter for the SFT dataset?
+    tags: [astromlabai, numeric]
+    relevant:
+      - doc_id: 5d5ebdc2-0578-5b92-8872-7ed18015d3e3
+        page: 4
+        contains: "8.8 million high-quality Q&A pairs"
+
+  - id: q14
+    question: Which method in mergekit produced the final merged AstroSage model?
+    tags: [astromlabai, method, entity]
+    relevant:
+      - doc_id: 5d5ebdc2-0578-5b92-8872-7ed18015d3e3
+        page: 5
+        contains: "DARE-TIES method"
+
+  # === black_hole_formation.pdf (Gaete et al. 2024) ===
+
+  - id: q15
+    question: How many supermassive black holes have been detected at redshift greater than 6?
+    tags: [black_hole_formation, numeric, fact]
+    relevant:
+      - doc_id: 56aa53cd-fd18-5881-bab1-ff123848e326
+        page: 1
+        contains: "More than 300 supermassive black holes have been detected at redshifts larger than 6"
+
+  - id: q16
+    question: What efficiency range does the paper predict for forming a massive central object?
+    tags: [black_hole_formation, numeric, result]
+    relevant:
+      - doc_id: 56aa53cd-fd18-5881-bab1-ff123848e326
+        page: 1
+        contains: "potentially reaching e ﬃciencies of 0 .05 −0.08 in realistic"
+
+  - id: q17
+    question: What is the redshift of the most distant quasar discovered by JWST mentioned in the paper?
+    tags: [black_hole_formation, numeric, observation]
+    relevant:
+      - doc_id: 56aa53cd-fd18-5881-bab1-ff123848e326
+        page: 1
+        contains: "James Webb Space Telescope (JWST) at redshift z ≈10.3"
+
+  - id: q18
+    question: What seed black hole mass is needed if it formed at z >= 15 to become an SMBH?
+    tags: [black_hole_formation, numeric, theory]
+    relevant:
+      - doc_id: 56aa53cd-fd18-5881-bab1-ff123848e326
+        page: 2
+        contains: "seed black hole\nmust have formed at redshift z ≥15"
+
+  - id: q19
+    question: How long is the cluster assumed to be when the simulation begins?
+    tags: [black_hole_formation, numeric, method]
+    relevant:
+      - doc_id: 56aa53cd-fd18-5881-bab1-ff123848e326
+        page: 2
+        contains: "cluster which is more than 50 Myr old"
+
+  # === early_galaxies_jwst.pdf (Shen et al. 2024) ===
+
+  - id: q20
+    question: What value of H0 does the EDE cosmology reconstruction give in this paper?
+    tags: [early_galaxies_jwst, numeric, cosmology]
+    relevant:
+      - doc_id: 675114e8-197d-5d85-a73f-3f1e235abcb0
+        page: 3
+        contains: "74.83+1.9"
+
+  - id: q21
+    question: What value of H0 does the LambdaCDM reconstruction give?
+    tags: [early_galaxies_jwst, numeric, cosmology]
+    relevant:
+      - doc_id: 675114e8-197d-5d85-a73f-3f1e235abcb0
+        page: 3
+        contains: "67.81+0.64"
+
+  - id: q22
+    question: What sigma_UV range at M_halo ~ 10^10.5 reconciles JWST observations under EDE?
+    tags: [early_galaxies_jwst, numeric, result]
+    relevant:
+      - doc_id: 675114e8-197d-5d85-a73f-3f1e235abcb0
+        page: 1
+        contains: "enhanced UV\nvariabilities (𝜎UV ∼ 0.8 − 1.3 mag"
+
+  - id: q23
+    question: Approximately what fraction of critical density does EDE contribute at maximal contribution?
+    tags: [early_galaxies_jwst, numeric, theory]
+    relevant:
+      - doc_id: 675114e8-197d-5d85-a73f-3f1e235abcb0
+        page: 2
+        contains: "contributes ∼ 10%ofthecrit-\nicaldensityatitstimeofmaximalcontribution"
+
+  - id: q24
+    question: How many of the z >= 12 candidates from JWST were spectroscopically confirmed by the surveys mentioned?
+    tags: [early_galaxies_jwst, numeric, observation]
+    relevant:
+      - doc_id: 675114e8-197d-5d85-a73f-3f1e235abcb0
+        page: 1
+        contains: "seven\nof the 𝑧 ≳ 12 candidates have already been spectroscopically"
+
+  # === rag_astronomy_agents.pdf (Xu et al. 2025) ===
+
+  - id: q25
+    question: How many Cosmology QA pairs are in the CosmoPaperQA benchmark?
+    tags: [rag_astronomy_agents, numeric, benchmark]
+    relevant:
+      - doc_id: b3fdc1f8-46ab-5e9c-857d-2f3e77888f2f
+        page: 1
+        contains: "105 Cosmology\nQuestion-Answer (QA) pairs"
+
+  - id: q26
+    question: What accuracy does the best RAG agent achieve on CosmoPaperQA?
+    tags: [rag_astronomy_agents, numeric, result]
+    relevant:
+      - doc_id: b3fdc1f8-46ab-5e9c-857d-2f3e77888f2f
+        page: 1
+        contains: "OpenAI embedding and genera-\ntive model, yielding 91.4% accuracy"
+
+  - id: q27
+    question: What accuracy does the VertexAI Assistant achieve on CosmoPaperQA?
+    tags: [rag_astronomy_agents, numeric, comparison]
+    relevant:
+      - doc_id: b3fdc1f8-46ab-5e9c-857d-2f3e77888f2f
+        page: 2
+        contains: "VertexAI Assistant: 86.7%"
+
+  - id: q28
+    question: What chunk size does the SciRag document segmentation use?
+    tags: [rag_astronomy_agents, numeric, method]
+    relevant:
+      - doc_id: b3fdc1f8-46ab-5e9c-857d-2f3e77888f2f
+        page: 3
+        contains: "LangChain with 5000-\ntoken chunks and 250-token overlap"
+
+  # === astro_wrapped_2025.pdf (Lewis et al. 2026) ===
+
+  - id: q29
+    question: How many papers were uploaded to the Astrophysics arXiv category in 2025?
+    tags: [astro_wrapped_2025, numeric]
+    relevant:
+      - doc_id: 46a893f1-15d4-5faf-b232-cce440bf63db
+        page: 2
+        contains: "18660 papers uploaded under the Astro-\nphysics category"
+
+  - id: q30
+    question: Which telescope was the most mentioned in 2025 arXiv papers?
+    tags: [astro_wrapped_2025, entity]
+    relevant:
+      - doc_id: 46a893f1-15d4-5faf-b232-cce440bf63db
+        page: 5
+        contains: "James Webb Space\nTelescopewas the most mentioned telescope"

@@ -1,0 +1,324 @@
+{
+  "files": [
+    {
+      "filename": "icdb88jqq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jqq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jqq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jqq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jqq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jqq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jrq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jrq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jrq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jrq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jrq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jrq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jsq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jsq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jsq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jsq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jsq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jsq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jtq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jtq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jtq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jtq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jtq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jtq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88juq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88juq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88juq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88juq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88juq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88juq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jvq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jvq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jvq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jvq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jvq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jvq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jwq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jwq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jwq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jwq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jwq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jwq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jxq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jxq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jxq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jxq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jxq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jxq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jyq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jyq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jyq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jyq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jyq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jyq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jzq_flc.fits",
+      "path": "dataset\\fits_files\\icdb88jzq_flc.fits",
+      "instrument": "FLC",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jzq_flt.fits",
+      "path": "dataset\\fits_files\\icdb88jzq_flt.fits",
+      "instrument": "FLT",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "icdb88jzq_raw.fits",
+      "path": "dataset\\fits_files\\icdb88jzq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": false,
+      "anomaly_type": null
+    },
+    {
+      "filename": "id0h05m3q_raw.fits",
+      "path": "dataset\\fits_files\\id0h05m3q_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h05m5q_raw.fits",
+      "path": "dataset\\fits_files\\id0h05m5q_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h05m6q_raw.fits",
+      "path": "dataset\\fits_files\\id0h05m6q_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h06kjq_raw.fits",
+      "path": "dataset\\fits_files\\id0h06kjq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h06klq_raw.fits",
+      "path": "dataset\\fits_files\\id0h06klq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h06kmq_raw.fits",
+      "path": "dataset\\fits_files\\id0h06kmq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h06koq_raw.fits",
+      "path": "dataset\\fits_files\\id0h06koq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h07g9q_raw.fits",
+      "path": "dataset\\fits_files\\id0h07g9q_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h07gbq_raw.fits",
+      "path": "dataset\\fits_files\\id0h07gbq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    },
+    {
+      "filename": "id0h07gcq_raw.fits",
+      "path": "dataset\\fits_files\\id0h07gcq_raw.fits",
+      "instrument": "RAW",
+      "obs_collection": "HST",
+      "expected_anomaly": true,
+      "anomaly_type": "raw_level1"
+    }
+  ]
+}

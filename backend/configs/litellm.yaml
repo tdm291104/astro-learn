@@ -1,0 +1,29 @@
+model_list:
+  - model_name: astrolearn-llm
+    litellm_params:
+      model: groq/llama-3.3-70b-versatile
+      api_key: os.environ/GROQ_API_KEY
+
+  - model_name: astrolearn-llm-fast
+    litellm_params:
+      model: groq/llama-3.1-8b-instant
+      api_key: os.environ/GROQ_API_KEY
+
+  - model_name: astrolearn-embedding
+    litellm_params:
+      model: openai/jina-embeddings-v3
+      api_base: https://api.jina.ai/v1
+      api_key: os.environ/JINA_API_KEY
+      extra_body:
+        dimensions: 384
+
+  - model_name: astrolearn-reranker
+    litellm_params:
+      model: jina_ai/jina-reranker-v2-base-multilingual
+      api_key: os.environ/JINA_API_KEY
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+
+litellm_settings:
+  drop_params: true

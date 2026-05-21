@@ -1,0 +1,519 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Cosmic Dark Theme — map shadcn / Tailwind tokens onto the cosmic palette so
+ * existing shadcn components inherit the theme without per-component edits. */
+@theme inline {
+  --color-background: var(--bg-0);
+  --color-foreground: var(--text-primary);
+
+  --font-sans: var(--font-exo2);
+  --font-mono: var(--font-space-mono);
+  --font-heading: var(--font-orbitron);
+
+  --color-sidebar: var(--bg-1);
+  --color-sidebar-foreground: var(--text-primary);
+  --color-sidebar-primary: var(--accent-gold);
+  --color-sidebar-primary-foreground: #050500;
+  --color-sidebar-accent: var(--accent-gold-dim);
+  --color-sidebar-accent-foreground: var(--accent-gold);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--accent-gold);
+
+  --color-chart-1: var(--accent-gold);
+  --color-chart-2: var(--accent-blue);
+  --color-chart-3: var(--accent-purple);
+  --color-chart-4: var(--accent-teal);
+  --color-chart-5: var(--accent-coral);
+
+  --color-ring: var(--accent-gold);
+  --color-input: rgba(255, 255, 255, 0.04);
+  --color-border: var(--border);
+
+  --color-destructive: var(--accent-coral);
+
+  --color-accent: var(--accent-gold-dim);
+  --color-accent-foreground: var(--accent-gold);
+
+  --color-muted: var(--bg-2);
+  --color-muted-foreground: var(--text-secondary);
+
+  --color-secondary: var(--bg-3);
+  --color-secondary-foreground: var(--text-primary);
+
+  --color-primary: var(--accent-gold);
+  --color-primary-foreground: #050500;
+
+  --color-popover: var(--bg-2);
+  --color-popover-foreground: var(--text-primary);
+
+  --color-card: var(--bg-card);
+  --color-card-foreground: var(--text-primary);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
+  --radius-4xl: 32px;
+}
+
+:root {
+  /* Cosmic Dark Theme palette */
+  --bg-0: #04060f;
+  --bg-1: #080c1a;
+  --bg-2: #0d1225;
+  --bg-3: #121830;
+  --bg-card: rgba(13, 18, 37, 0.85);
+
+  --accent-gold: #e2c97e;
+  --accent-gold-dim: rgba(226, 201, 126, 0.15);
+  --accent-blue: #4fc3f7;
+  --accent-blue-dim: rgba(79, 195, 247, 0.12);
+  --accent-purple: #b39ddb;
+  --accent-purple-dim: rgba(179, 157, 219, 0.12);
+  --accent-teal: #4dd0e1;
+  --accent-coral: #ff7043;
+
+  --text-primary: #e8eaf6;
+  --text-secondary: #8892b0;
+  --text-muted: #4a5568;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(226, 201, 126, 0.3);
+
+  --glow-gold: 0 0 20px rgba(226, 201, 126, 0.3);
+  --glow-blue: 0 0 20px rgba(79, 195, 247, 0.3);
+
+  --sidebar-w: 220px;
+  --radius: 12px;
+}
+
+/* Force dark visuals regardless of next-themes class state */
+.light,
+.dark {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    font-family: var(--font-exo2), system-ui, sans-serif;
+  }
+  body {
+    background: var(--bg-0);
+    color: var(--text-primary);
+    font-family: var(--font-exo2), system-ui, sans-serif;
+    min-height: 100vh;
+    position: relative;
+  }
+  /* Background gradient layer underneath star field */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(79, 195, 247, 0.06), transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(226, 201, 126, 0.05), transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(179, 157, 219, 0.04), transparent 60%),
+      var(--bg-0);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-orbitron), system-ui, sans-serif;
+    letter-spacing: 0.05em;
+  }
+  code, pre, kbd, samp {
+    font-family: var(--font-space-mono), ui-monospace, monospace;
+  }
+}
+
+/* Custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+}
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(226, 201, 126, 0.3);
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-gold-dim);
+  color: var(--accent-gold);
+}
+
+/* Utility helpers used across cosmic components */
+@layer utilities {
+  .font-orbitron {
+    font-family: var(--font-orbitron), system-ui, sans-serif;
+  }
+  .font-exo2 {
+    font-family: var(--font-exo2), system-ui, sans-serif;
+  }
+  .font-space-mono {
+    font-family: var(--font-space-mono), ui-monospace, monospace;
+  }
+  .text-cosmic-primary {
+    color: var(--text-primary);
+  }
+  .text-cosmic-secondary {
+    color: var(--text-secondary);
+  }
+  .text-cosmic-muted {
+    color: var(--text-muted);
+  }
+  .text-accent-gold {
+    color: var(--accent-gold);
+  }
+  .text-accent-blue {
+    color: var(--accent-blue);
+  }
+  .text-accent-teal {
+    color: var(--accent-teal);
+  }
+  .text-accent-purple {
+    color: var(--accent-purple);
+  }
+  .text-accent-coral {
+    color: var(--accent-coral);
+  }
+  .bg-cosmic-0 { background-color: var(--bg-0); }
+  .bg-cosmic-1 { background-color: var(--bg-1); }
+  .bg-cosmic-2 { background-color: var(--bg-2); }
+  .bg-cosmic-3 { background-color: var(--bg-3); }
+  .bg-cosmic-card {
+    background-color: var(--bg-card);
+    backdrop-filter: blur(10px);
+  }
+  .border-cosmic { border-color: var(--border); }
+  .border-cosmic-hover:hover { border-color: var(--border-hover); }
+  .glow-gold { box-shadow: var(--glow-gold); }
+  .glow-blue { box-shadow: var(--glow-blue); }
+  .uppercase-track {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .uppercase-track-tight {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Cosmic form / button primitives — used by auth pages and forms across
+ * the app. They wrap shadcn primitives without replacing them. */
+@layer components {
+  .cosmic-label {
+    font-family: var(--font-exo2), system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .cosmic-input {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: var(--font-exo2), system-ui, sans-serif;
+  }
+  .cosmic-input::placeholder {
+    color: var(--text-muted);
+  }
+  .cosmic-input:focus,
+  .cosmic-input:focus-visible {
+    outline: none !important;
+    border-color: var(--accent-gold) !important;
+    box-shadow: 0 0 0 3px rgba(226, 201, 126, 0.15) !important;
+  }
+  .cosmic-input[aria-invalid="true"] {
+    border-color: var(--accent-coral) !important;
+    box-shadow: 0 0 0 3px rgba(255, 112, 67, 0.12) !important;
+  }
+
+  .cosmic-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 10px;
+    font-family: var(--font-orbitron), system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #050500;
+    background: linear-gradient(135deg, #c8a84b, #e2c97e);
+    border: 1px solid rgba(226, 201, 126, 0.6);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  .cosmic-btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--glow-gold);
+  }
+  .cosmic-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .cosmic-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 10px;
+    font-family: var(--font-orbitron), system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent-gold);
+    background: transparent;
+    border: 1px solid var(--accent-gold);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+  .cosmic-btn-outline:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: var(--accent-gold-dim);
+    box-shadow: var(--glow-gold);
+  }
+  .cosmic-btn-outline:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .cosmic-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    font-family: var(--font-exo2), system-ui, sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .cosmic-btn-ghost:hover:not(:disabled) {
+    color: var(--accent-gold);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--border);
+  }
+
+  .cosmic-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg, 16px);
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .cosmic-card-hover:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+  }
+  .cosmic-card-hover::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .cosmic-card-hover:hover::before {
+    opacity: 1;
+  }
+
+  .cosmic-stat-value {
+    font-family: var(--font-orbitron), system-ui, sans-serif;
+    font-weight: 700;
+    color: var(--accent-gold);
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .cosmic-stat-label {
+    font-family: var(--font-exo2), system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+  }
+
+  .cosmic-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-family: var(--font-exo2), system-ui, sans-serif;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .cosmic-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .cosmic-status-pulse {
+    animation: cosmic-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes cosmic-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  /* Indeterminate progress bar — a shimmer that slides left→right
+     forever. Used when a long-running agent reports step_count but
+     doesn't know its total step count yet (e.g. custom LLM loops). */
+  .indeterminate-progress {
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    animation: indeterminate-progress 1.4s ease-in-out infinite;
+  }
+  @keyframes indeterminate-progress {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(350%); }
+  }
+
+  /* Inner tabs — underline style. Wraps shadcn TabsTrigger. */
+  .cosmic-tab-trigger {
+    position: relative;
+    background: transparent !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    border-bottom: 2px solid transparent !important;
+    color: var(--text-secondary) !important;
+    font-family: var(--font-orbitron), system-ui, sans-serif !important;
+    font-size: 0.7rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.16em !important;
+    padding: 0.65rem 0.9rem !important;
+    box-shadow: none !important;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .cosmic-tab-trigger:hover {
+    color: var(--text-primary) !important;
+  }
+  .cosmic-tab-trigger[data-state="active"],
+  .cosmic-tab-trigger[aria-selected="true"] {
+    color: var(--accent-gold) !important;
+    border-bottom-color: var(--accent-gold) !important;
+  }
+
+  /* Top-level tabs — pill style. */
+  .cosmic-tab-pill {
+    background: transparent !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 999px !important;
+    color: var(--text-secondary) !important;
+    font-family: var(--font-orbitron), system-ui, sans-serif !important;
+    font-size: 0.68rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.16em !important;
+    padding: 0.4rem 1rem !important;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
+  }
+  .cosmic-tab-pill:hover {
+    color: var(--text-primary) !important;
+    border-color: rgba(226, 201, 126, 0.2) !important;
+  }
+  .cosmic-tab-pill[data-state="active"],
+  .cosmic-tab-pill[aria-selected="true"] {
+    color: var(--accent-gold) !important;
+    background: var(--accent-gold-dim) !important;
+    border-color: rgba(226, 201, 126, 0.3) !important;
+  }
+
+  /* Topbar / utility icon button — square 36x36 with hover gold glow.
+   * Mirrors the .icon-btn from the cosmic reference HTML. On mobile the
+   * total tap target is bumped to 44x44 (WCAG 2.5.5) without enlarging
+   * the visual frame: extra space comes from min-height/width with the
+   * inner content kept at 36x36 via padding-equivalent. */
+  .cosmic-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  @media (min-width: 768px) {
+    .cosmic-icon-btn {
+      min-width: 36px;
+      min-height: 36px;
+    }
+  }
+  .cosmic-icon-btn:hover {
+    color: var(--accent-gold);
+    border-color: var(--border-hover);
+  }
+
+  /* Standard page-content wrapper — caps width at the 2xl breakpoint so
+   * text + tables + chats stay readable on ultrawide displays, with
+   * responsive horizontal gutters. Used inside <main> in dashboard layout. */
+  .app-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1536px; /* same as Tailwind's screen-2xl */
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (min-width: 640px) {
+    .app-container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .app-container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+}

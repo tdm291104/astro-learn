@@ -1,0 +1,2414 @@
+[
+  {
+    "file_path": "dataset\\fits_files\\hst_13352_bb_wfc3_uvis_f814w_icdxbbdh_drc.fits",
+    "t1": {
+      "hdu_count": 5,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "WHT",
+        "CTX",
+        "HDRTAB"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "BinTableHDU"
+      ],
+      "exptime": 600.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 8
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 0.028207,
+      "std": 0.6257,
+      "min": -1.192307,
+      "max": 144.753952,
+      "nan_ratio": 0.353741,
+      "shape": [
+        5202,
+        5006
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 4 NAXIS=2 does not match data ndim=1."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\hst_13352_bb_wfc3_uvis_f814w_icdxbbdl_drc.fits",
+    "t1": {
+      "hdu_count": 5,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "WHT",
+        "CTX",
+        "HDRTAB"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "BinTableHDU"
+      ],
+      "exptime": 600.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 8
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 0.028574,
+      "std": 0.652371,
+      "min": -1.174027,
+      "max": 144.510025,
+      "nan_ratio": 0.353743,
+      "shape": [
+        5202,
+        5006
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 4 NAXIS=2 does not match data ndim=1."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\hst_13352_bb_wfc3_uvis_f814w_icdxbbdl_flc.fits",
+    "t1": {
+      "hdu_count": 23,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "HDRLET",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "NonstandardExtHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 600.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 16.373233,
+      "std": 404.929896,
+      "min": -1406.169556,
+      "max": 88233.085938,
+      "nan_ratio": 0.0,
+      "shape": [
+        2051,
+        4096
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 13 NAXIS=2 does not match data ndim=1.",
+        "HDU 15 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 16 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 17 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 18 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 19 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 20 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 21 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 22 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\hst_13352_bb_wfc3_uvis_f814w_icdxbbdo_drc.fits",
+    "t1": {
+      "hdu_count": 5,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "WHT",
+        "CTX",
+        "HDRTAB"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "BinTableHDU"
+      ],
+      "exptime": 600.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 8
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 0.046381,
+      "std": 0.755531,
+      "min": -1.380108,
+      "max": 144.777069,
+      "nan_ratio": 0.353746,
+      "shape": [
+        5202,
+        5006
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 4 NAXIS=2 does not match data ndim=1."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\hst_13352_bb_wfc3_uvis_f814w_icdxbbdo_flc.fits",
+    "t1": {
+      "hdu_count": 23,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "HDRLET",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "NonstandardExtHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 600.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 26.902254,
+      "std": 470.296929,
+      "min": -1395.633545,
+      "max": 88225.398438,
+      "nan_ratio": 0.0,
+      "shape": [
+        2051,
+        4096
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 13 NAXIS=2 does not match data ndim=1.",
+        "HDU 15 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 16 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 17 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 18 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 19 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 20 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 21 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 22 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jqq_flc.fits",
+    "t1": {
+      "hdu_count": 13,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 450.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 7.083725,
+      "std": 319.061514,
+      "min": -483.117767,
+      "max": 73628.445312,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jqq_flt.fits",
+    "t1": {
+      "hdu_count": 13,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 450.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 6.939934,
+      "std": 318.05348,
+      "min": -470.023407,
+      "max": 73625.828125,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jqq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 450.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2512.559564,
+      "std": 206.900753,
+      "min": 2476.0,
+      "max": 50119.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1048
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jrq_flc.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 450.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 8.023264,
+      "std": 194.682723,
+      "min": -474.842896,
+      "max": 63934.199219,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jrq_flt.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 450.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 7.886342,
+      "std": 193.247964,
+      "min": -461.985962,
+      "max": 63897.71875,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jrq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 450.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2512.90769,
+      "std": 126.003994,
+      "min": 2474.0,
+      "max": 43943.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1048
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jsq_flc.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 8.345672,
+      "std": 277.447599,
+      "min": -445.008148,
+      "max": 76855.296875,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jsq_flt.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 8.221438,
+      "std": 276.586407,
+      "min": -433.271149,
+      "max": 76854.789062,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jsq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2510.975562,
+      "std": 172.851778,
+      "min": 2474.0,
+      "max": 50336.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1048
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jtq_flc.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 8.232467,
+      "std": 210.356839,
+      "min": -445.283142,
+      "max": 71071.5,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jtq_flt.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 8.100863,
+      "std": 209.345274,
+      "min": -432.504028,
+      "max": 71011.34375,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jtq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2510.45284,
+      "std": 131.854282,
+      "min": 2475.0,
+      "max": 47068.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1048
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88juq_flc.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 6.618271,
+      "std": 186.860447,
+      "min": -439.307159,
+      "max": 69667.429688,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88juq_flt.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 6.482747,
+      "std": 185.574384,
+      "min": -427.573578,
+      "max": 69661.171875,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88juq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2510.380867,
+      "std": 115.093964,
+      "min": 2472.0,
+      "max": 45230.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1048
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jvq_flc.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 6.165031,
+      "std": 102.051032,
+      "min": -442.650024,
+      "max": 22791.3125,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jvq_flt.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 6.028177,
+      "std": 100.58097,
+      "min": -430.407654,
+      "max": 22390.746094,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jvq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 400.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2509.908385,
+      "std": 64.509263,
+      "min": 2474.0,
+      "max": 17470.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1048
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jwq_flc.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 150.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 4.350853,
+      "std": 111.4009,
+      "min": -163.887024,
+      "max": 66613.125,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jwq_flt.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 150.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 4.256434,
+      "std": 110.721233,
+      "min": -159.220123,
+      "max": 66597.257812,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jwq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 150.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2509.13104,
+      "std": 70.43774,
+      "min": 2474.0,
+      "max": 45402.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1048
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jxq_flc.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 150.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 4.333995,
+      "std": 76.989305,
+      "min": -155.734879,
+      "max": 27982.398438,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jxq_flt.fits",
+    "t1": {
+      "hdu_count": 14,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "WCSDVARR",
+        "WCSDVARR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 150.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 4.234447,
+      "std": 76.161192,
+      "min": -151.282761,
+      "max": 27961.980469,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1025
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 8 NAXIS=2 does not match data ndim=1.",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 10 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 11 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 12 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jxq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 150.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2509.043683,
+      "std": 48.415306,
+      "min": 2475.0,
+      "max": 20266.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        1024,
+        1048
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jyq_flc.fits",
+    "t1": {
+      "hdu_count": 11,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 537.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 6.503019,
+      "std": 285.120763,
+      "min": -10385.397461,
+      "max": 89802.351562,
+      "nan_ratio": 0.0,
+      "shape": [
+        2050,
+        2047
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 7 NAXIS=2 does not match data ndim=1.",
+        "HDU 8 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jyq_flt.fits",
+    "t1": {
+      "hdu_count": 11,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 537.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 6.359757,
+      "std": 284.122256,
+      "min": -10185.9375,
+      "max": 89801.289062,
+      "nan_ratio": 0.0,
+      "shape": [
+        2050,
+        2047
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 7 NAXIS=2 does not match data ndim=1.",
+        "HDU 8 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jyq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 537.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2569.206974,
+      "std": 205.118161,
+      "min": 2522.0,
+      "max": 53150.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2050,
+        2070
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jzq_flc.fits",
+    "t1": {
+      "hdu_count": 11,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 538.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 5.040553,
+      "std": 143.68161,
+      "min": -10736.337891,
+      "max": 63127.742188,
+      "nan_ratio": 0.0,
+      "shape": [
+        2050,
+        2047
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 7 NAXIS=2 does not match data ndim=1.",
+        "HDU 8 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jzq_flt.fits",
+    "t1": {
+      "hdu_count": 11,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "HDRLET",
+        "HDRLET",
+        "HDRLET",
+        "WCSCORR",
+        "D2IMARR",
+        "D2IMARR",
+        "HDRLET"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "NonstandardExtHDU",
+        "BinTableHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "NonstandardExtHDU"
+      ],
+      "exptime": 538.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 4.899051,
+      "std": 142.057965,
+      "min": -10342.837891,
+      "max": 63124.765625,
+      "nan_ratio": 0.0,
+      "shape": [
+        2050,
+        2047
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 7 NAXIS=2 does not match data ndim=1.",
+        "HDU 8 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2'].",
+        "HDU 9 has partial WCS \u2014 missing ['CTYPE1', 'CTYPE2']."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\icdb88jzq_raw.fits",
+    "t1": {
+      "hdu_count": 4,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 538.0,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2566.288785,
+      "std": 119.141722,
+      "min": 2521.0,
+      "max": 47456.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2050,
+        2070
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h05m3q_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 0.5,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2551.392349,
+      "std": 62.302945,
+      "min": 2440.0,
+      "max": 36095.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h05m5q_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 9.2,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2605.52011,
+      "std": 81.427839,
+      "min": 2439.0,
+      "max": 36528.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h05m6q_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 22.9,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2688.25042,
+      "std": 119.769783,
+      "min": 2439.0,
+      "max": 53286.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h06kjq_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 0.5,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2551.403907,
+      "std": 57.082374,
+      "min": 2439.0,
+      "max": 30483.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h06klq_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 6.4,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2817.080037,
+      "std": 183.775435,
+      "min": 2438.0,
+      "max": 25386.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h06kmq_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 7.6,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 3095.733259,
+      "std": 357.332014,
+      "min": 2438.0,
+      "max": 28210.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h06koq_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 22.700001,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 4185.04933,
+      "std": 1051.432543,
+      "min": 2436.0,
+      "max": 31539.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h07g9q_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 0.5,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2551.589629,
+      "std": 59.243355,
+      "min": 2439.0,
+      "max": 31165.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h07gbq_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 9.2,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2605.344867,
+      "std": 96.567167,
+      "min": 2439.0,
+      "max": 50445.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  },
+  {
+    "file_path": "dataset\\fits_files\\id0h07gcq_raw.fits",
+    "t1": {
+      "hdu_count": 7,
+      "hdu_names": [
+        "PRIMARY",
+        "SCI",
+        "ERR",
+        "DQ",
+        "SCI",
+        "ERR",
+        "DQ"
+      ],
+      "hdu_types": [
+        "PrimaryHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU",
+        "ImageHDU"
+      ],
+      "exptime": 22.9,
+      "telescop": "HST",
+      "instrume": "WFC3",
+      "bitpix": 16
+    },
+    "t2": {
+      "hdu_index": 1,
+      "mean": 2689.078704,
+      "std": 107.807312,
+      "min": 2440.0,
+      "max": 12766.0,
+      "nan_ratio": 0.0,
+      "shape": [
+        2070,
+        3920
+      ]
+    },
+    "t3": {
+      "has_anomaly": true,
+      "anomalies": [
+        "HDU 1 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u').",
+        "HDU 4 BITPIX=16 (kind 'i') does not match data dtype uint16 (kind 'u')."
+      ]
+    }
+  }
+]

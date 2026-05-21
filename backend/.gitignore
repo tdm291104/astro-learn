@@ -1,0 +1,72 @@
+# --- Secrets / env ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+pip-wheel-metadata/
+
+# --- Virtual envs ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- pip ---
+# Do NOT commit a `pip freeze` dump here unless it becomes a library.
+# pyproject.toml is the source of truth for dependencies.
+
+# --- Test / coverage ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+
+# --- Type checkers / linters ---
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# --- Project artifacts ---
+var/                                        # local data dir (chroma, sqlite, uploads)
+logs/
+*.log
+uploads/
+storage/
+
+# --- Astronomy data files (large; should not be committed) ---
+*.fits
+*.fits.gz
+*.fts
+*.fz
+
+# --- Celery ---
+celerybeat-schedule
+celerybeat.pid
+
+# --- Alembic (keep versions/, ignore generated cache) ---
+alembic/versions/__pycache__/
+
+# --- Notebooks ---
+.ipynb_checkpoints/
