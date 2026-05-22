@@ -21,6 +21,7 @@ from agents.orchestrator.router import Router, _rule_agent_name
 from agents.orchestrator.task_planner import PlannedStep, TaskPlan, TaskPlanner
 from core.exceptions import AgentError, ExternalServiceError, ToolError
 from core.llm.llm_client import LLMClient
+from core.llm.prompt_templates import language_directive
 from memory.short_term.conversation_memory import ConversationMemory
 from repositories.message_repository import MessageRepository
 from repositories.session_repository import SessionRepository
@@ -33,6 +34,9 @@ _NASA_DIRECT_SENTINEL: Final[str] = "nasa_direct"
 
 # Sentinel kept in sync with router._WEB_SEARCH_DIRECT_AGENT.
 _WEB_SEARCH_DIRECT_SENTINEL: Final[str] = "web_search_direct"
+
+# Sentinel kept in sync with router._USER_METADATA_AGENT.
+_USER_METADATA_SENTINEL: Final[str] = "user_metadata"
 
 # Sentinel kept in sync with router._CATALOG_MULTI_SEARCH_AGENT.
 _CATALOG_MULTI_SEARCH_SENTINEL: Final[str] = "catalog_multi_search"
@@ -99,32 +103,124 @@ _CHAT_RESPONSE_TIMEOUT_S: Final[float] = 30.0
 _MEMORY_HISTORY_LIMIT: Final[int] = 8
 
 
-_OFF_TOPIC_DECLINE_MESSAGE: Final[str] = (
-    "That's outside what I can help with. I'm specialized in "
-    "astronomy research and notebook learning tools. Try asking about "
-    "your notebooks or astronomical objects!"
-)
+_OFF_TOPIC_DECLINE_MESSAGE: Final[dict[str, str]] = {
+    "en": (
+        "That's outside what I can help with. I'm specialized in "
+        "astronomy research and notebook learning tools. Try asking about "
+        "your notebooks or astronomical objects!"
+    ),
+    "vi": (
+        "Câu hỏi này nằm ngoài phạm vi em hỗ trợ. Em chuyên về nghiên cứu "
+        "thiên văn học và các công cụ học tập notebook. Bạn hãy thử hỏi về "
+        "notebook hoặc các thiên thể nhé!"
+    ),
+}
 
 
-_WEB_SEARCH_UNAVAILABLE_MESSAGE: Final[str] = (
-    "I couldn't search the web right now. Please try again later or "
-    "narrow your question to something I can answer from your notebooks."
-)
+_WEB_SEARCH_UNAVAILABLE_MESSAGE: Final[dict[str, str]] = {
+    "en": (
+        "I couldn't search the web right now. Please try again later or "
+        "narrow your question to something I can answer from your notebooks."
+    ),
+    "vi": (
+        "Em không tìm kiếm trên web được lúc này. Bạn vui lòng thử lại sau, "
+        "hoặc thu hẹp câu hỏi về nội dung notebook của bạn nhé."
+    ),
+}
 
 # Matches WebSearchTool default max_results=5.
 _WEB_SEARCH_RENDER_LIMIT: Final[int] = 5
 
 
-_FRIENDLY_FALLBACK_MESSAGE: Final[str] = (
-    "I'm not sure how to help with that. Try asking about your "
-    "notebook (summarize, quiz, Q&A) or an astronomical object "
-    "(search Simbad, analyze FITS)."
+_FRIENDLY_FALLBACK_MESSAGE: Final[dict[str, str]] = {
+    "en": (
+        "I'm not sure how to help with that. Try asking about your "
+        "notebook (summarize, quiz, Q&A) or an astronomical object "
+        "(search Simbad, analyze FITS)."
+    ),
+    "vi": (
+        "Em chưa rõ cách giúp câu này. Bạn thử hỏi về notebook (tóm tắt, "
+        "quiz, Q&A) hoặc một thiên thể (tra Simbad, phân tích FITS) nhé."
+    ),
+}
+
+
+_CHAT_ERROR_FALLBACK: Final[dict[str, str]] = {
+    "en": "I had trouble responding just now. Please try again in a moment.",
+    "vi": "Em gặp lỗi khi trả lời. Bạn vui lòng thử lại sau giây lát nhé.",
+}
+
+
+_PLANNER_TIMEOUT_MESSAGE: Final[dict[str, str]] = {
+    "en": (
+        "The planner took too long to respond. "
+        "Please try rephrasing your request."
+    ),
+    "vi": (
+        "Bộ lập kế hoạch phản hồi quá lâu. "
+        "Bạn vui lòng diễn đạt lại câu hỏi nhé."
+    ),
+}
+
+
+_NASA_UNAVAILABLE_MESSAGE: Final[dict[str, str]] = {
+    "en": (
+        "The NASA discovery feature isn't available right now. "
+        "Please try again later."
+    ),
+    "vi": (
+        "Tính năng tra cứu NASA hiện không khả dụng. "
+        "Bạn vui lòng thử lại sau nhé."
+    ),
+}
+
+
+def _nasa_error_message(lang: str, code: str) -> str:
+    if lang == "vi":
+        return f"Em không kết nối được tới NASA lúc này ({code}). Bạn thử lại sau nhé."
+    return f"Couldn't reach NASA right now ({code}). Try again shortly."
+
+
+def _web_search_error_message(lang: str, code: str) -> str:
+    if lang == "vi":
+        return (
+            f"Em không tìm kiếm trên web được lúc này ({code}). "
+            "Bạn thử lại sau nhé."
+        )
+    return f"Couldn't search the web right now ({code}). Try again shortly."
+
+
+# Presence of any Vietnamese-specific diacritic = treat as Vietnamese turn.
+_VIETNAMESE_DIACRITICS: Final[re.Pattern[str]] = re.compile(
+    "["
+    "ăâđêôơưĂÂĐÊÔƠƯ"
+    "áàảãạÁÀẢÃẠ"
+    "ắằẳẵặẮẰẲẴẶ"
+    "ấầẩẫậẤẦẨẪẬ"
+    "éèẻẽẹÉÈẺẼẸ"
+    "ếềểễệẾỀỂỄỆ"
+    "íìỉĩịÍÌỈĨỊ"
+    "óòỏõọÓÒỎÕỌ"
+    "ốồổỗộỐỒỔỖỘ"
+    "ớờởỡợỚỜỞỠỢ"
+    "úùủũụÚÙỦŨỤ"
+    "ứừửữựỨỪỬỮỰ"
+    "ýỳỷỹỵÝỲỶỸỴ"
+    "]"
 )
 
 
-_CHAT_ERROR_FALLBACK: Final[str] = (
-    "I had trouble responding just now. Please try again in a moment."
-)
+def _detect_lang(task_or_text: Any) -> Literal["vi", "en"]:
+    """Cheap VN-vs-EN heuristic: any VN diacritic ⇒ vi, else en."""
+    if isinstance(task_or_text, str):
+        text = task_or_text
+    elif isinstance(task_or_text, dict):
+        text = _extract_user_text(task_or_text)
+    else:
+        text = ""
+    if text and _VIETNAMESE_DIACRITICS.search(text):
+        return "vi"
+    return "en"
 
 
 # Skip LLM intent call when free text contains astronomy keywords.
@@ -160,7 +256,8 @@ _INTENT_CLASSIFIER_SYSTEM_PROMPT: Final[str] = (
     "Classify the user message into exactly one word: "
     "chat, task, or off_topic.\n\n"
     "chat = casual conversation, greetings, general knowledge "
-    "questions, or questions about your capabilities.\n"
+    "questions, or questions about your capabilities (including in "
+    "Vietnamese, e.g. about luồng/agent/chức năng/tính năng).\n"
     "task = astronomy research or notebook operations.\n"
     "off_topic = unrelated requests we cannot help with.\n\n"
     "Examples:\n"
@@ -168,10 +265,18 @@ _INTENT_CLASSIFIER_SYSTEM_PROMPT: Final[str] = (
     "'What can you do?' -> chat\n"
     "'How are you?' -> chat\n"
     "'What is a pulsar?' -> chat\n"
+    "'Xin chào' -> chat\n"
+    "'Bạn làm được gì?' -> chat\n"
+    "'Bạn có bao nhiêu luồng phân tích?' -> chat\n"
+    "'Bạn có những chức năng nào?' -> chat\n"
+    "'Sao neutron là gì?' -> chat\n"
     "'Summarize my notebook' -> task\n"
     "'Search for M31' -> task\n"
+    "'Tóm tắt notebook của tôi' -> task\n"
+    "'Tìm thông tin về Orion' -> task\n"
     "'Write me a poem about love' -> off_topic\n"
-    "'Help me code a website' -> off_topic\n\n"
+    "'Help me code a website' -> off_topic\n"
+    "'Viết cho tôi một bài thơ' -> off_topic\n\n"
     "Reply with exactly one word only."
 )
 
@@ -182,7 +287,8 @@ _CONVERSATIONAL_SYSTEM_PROMPT: Final[str] = (
     "explain your capabilities (notebook Q&A, summarize, quiz, "
     "flashcards, FITS analysis, catalog search). "
     "Keep responses concise. "
-    "ALWAYS reply in the same natural language as the user's latest message."
+    "ALWAYS reply in the same natural language as the user's latest message — "
+    "if the user writes Vietnamese, reply in Vietnamese; if English, reply in English."
 )
 
 
@@ -364,24 +470,38 @@ class OrchestratorAgent(BaseAgent):
         # NASA short-cut bypasses LLM classification.
         nasa_params = self._match_nasa_direct(task)
         if nasa_params is not None:
-            nasa_msg = await self._handle_nasa_direct(nasa_params, state, yield_to=None)
+            nasa_msg = await self._handle_nasa_direct(
+                nasa_params, state, yield_to=None, lang=_detect_lang(task),
+            )
             await self._persist_turn(state, task, nasa_msg.content)
+            return state
+
+        # User-level metadata short-cut (cross-notebook structural queries).
+        user_md_params = self._match_user_metadata(task)
+        if user_md_params is not None:
+            md_msg = await self._handle_user_metadata(
+                user_md_params, state, yield_to=None, lang=_detect_lang(task),
+            )
+            await self._persist_turn(state, task, md_msg.content)
             return state
 
         # Web-search short-cut: same bypass pattern.
         web_params = self._match_web_search_direct(task)
         if web_params is not None:
             web_msg = await self._handle_web_search_direct(
-                web_params, state, yield_to=None,
+                web_params, state, yield_to=None, lang=_detect_lang(task),
             )
-            await self._persist_turn(state, task, web_msg.content)
+            await self._persist_turn(
+                state, task, web_msg.content,
+                assistant_extra=web_msg.extra or None,
+            )
             return state
 
         # Catalog multi-source short-cut (mode='catalog' first turn).
         catalog_params = self._match_catalog_multi_search(task)
         if catalog_params is not None:
             cat_msg = await self._handle_catalog_multi_search(
-                catalog_params, state, yield_to=None,
+                catalog_params, state, yield_to=None, lang=_detect_lang(task),
             )
             await self._persist_turn(
                 state,
@@ -393,7 +513,7 @@ class OrchestratorAgent(BaseAgent):
 
         intent = await self._classify_intent_or_default(task)
         if intent == "off_topic":
-            off_topic_msg = self._emit_off_topic(state)
+            off_topic_msg = self._emit_off_topic(state, lang=_detect_lang(task))
             await self._persist_turn(state, task, off_topic_msg.content)
             return state
         if intent == "chat":
@@ -405,15 +525,17 @@ class OrchestratorAgent(BaseAgent):
 
         plan = await self._plan(task)
         if not plan.steps:
-            text = plan.summary or _FRIENDLY_FALLBACK_MESSAGE
+            lang = _detect_lang(task)
+            text = plan.summary or _FRIENDLY_FALLBACK_MESSAGE[lang]
             state.append(AgentMessage(role="assistant", content=text))
-            state.final_output = self._empty_output(plan)
+            state.final_output = self._empty_output(plan, lang=lang)
             await self._persist_turn(state, task, text)
             return state
 
         step_outputs: dict[str, Any] = {}
         task_mode_run = task.get("mode")
         for i, step in enumerate(plan.steps):
+            self._inject_language(step, task)
             if len(plan.steps) > 1:
                 state.append(self._step_notice(step))
             sub_state = await self._dispatch_step(step, state)
@@ -486,29 +608,43 @@ class OrchestratorAgent(BaseAgent):
         if nasa_params is not None:
             nasa_msgs: list[AgentMessage] = []
             nasa_reply = await self._handle_nasa_direct(
-                nasa_params, state, yield_to=nasa_msgs
+                nasa_params, state, yield_to=nasa_msgs, lang=_detect_lang(task),
             )
             for msg in nasa_msgs:
                 yield msg
             await self._persist_turn(state, task, nasa_reply.content)
             return
 
+        user_md_params = self._match_user_metadata(task)
+        if user_md_params is not None:
+            md_msgs: list[AgentMessage] = []
+            md_reply = await self._handle_user_metadata(
+                user_md_params, state, yield_to=md_msgs, lang=_detect_lang(task),
+            )
+            for msg in md_msgs:
+                yield msg
+            await self._persist_turn(state, task, md_reply.content)
+            return
+
         web_params = self._match_web_search_direct(task)
         if web_params is not None:
             web_msgs: list[AgentMessage] = []
             web_reply = await self._handle_web_search_direct(
-                web_params, state, yield_to=web_msgs,
+                web_params, state, yield_to=web_msgs, lang=_detect_lang(task),
             )
             for msg in web_msgs:
                 yield msg
-            await self._persist_turn(state, task, web_reply.content)
+            await self._persist_turn(
+                state, task, web_reply.content,
+                assistant_extra=web_reply.extra or None,
+            )
             return
 
         catalog_params = self._match_catalog_multi_search(task)
         if catalog_params is not None:
             cat_msgs: list[AgentMessage] = []
             cat_reply = await self._handle_catalog_multi_search(
-                catalog_params, state, yield_to=cat_msgs,
+                catalog_params, state, yield_to=cat_msgs, lang=_detect_lang(task),
             )
             for msg in cat_msgs:
                 yield msg
@@ -522,7 +658,7 @@ class OrchestratorAgent(BaseAgent):
 
         intent = await self._classify_intent_or_default(task)
         if intent == "off_topic":
-            off_topic_msg = self._emit_off_topic(state)
+            off_topic_msg = self._emit_off_topic(state, lang=_detect_lang(task))
             yield off_topic_msg
             await self._persist_turn(state, task, off_topic_msg.content)
             return
@@ -543,11 +679,12 @@ class OrchestratorAgent(BaseAgent):
                 plan = hb
                 break
         if not plan.steps:
-            text = plan.summary or _FRIENDLY_FALLBACK_MESSAGE
+            lang = _detect_lang(task)
+            text = plan.summary or _FRIENDLY_FALLBACK_MESSAGE[lang]
             fallback = AgentMessage(role="assistant", content=text)
             state.append(fallback)
             yield fallback
-            state.final_output = self._empty_output(plan)
+            state.final_output = self._empty_output(plan, lang=lang)
             await self._persist_turn(state, task, text)
             return
 
@@ -564,6 +701,7 @@ class OrchestratorAgent(BaseAgent):
         final_extra: dict[str, Any] = {}
         task_mode = task.get("mode")
         for i, step in enumerate(plan.steps):
+            self._inject_language(step, task)
             notice = self._step_notice(step, index=i, total=total)
             state.append(notice)
             yield notice
@@ -657,6 +795,23 @@ class OrchestratorAgent(BaseAgent):
         sub_state = self._sub_state(step, state)
         return await agent.run(step.task_input, state=sub_state)
 
+    @staticmethod
+    def _inject_language(step: PlannedStep, task: dict[str, Any]) -> None:
+        """Forward parent locale/language into sub-agent task_input.
+
+        Router rules and the planner LLM don't naturally carry language,
+        so notebook tools (summarize/quiz/flashcard) would otherwise mirror
+        the source documents' language regardless of UI locale. This bridges
+        the FE locale into every sub-agent's task without each rule having
+        to plumb it through.
+        """
+        if "language" in step.task_input or "locale" in step.task_input:
+            return
+        lang = task.get("locale") or task.get("language")
+        if not isinstance(lang, str) or not lang:
+            lang = _detect_lang(task)
+        step.task_input["language"] = lang
+
     async def _plan_with_heartbeats(
         self,
         task: dict[str, Any],
@@ -717,10 +872,7 @@ class OrchestratorAgent(BaseAgent):
         except TimeoutError:
             return TaskPlan(
                 steps=[],
-                summary=(
-                    "The planner took too long to respond. "
-                    "Please try rephrasing your request."
-                ),
+                summary=_PLANNER_TIMEOUT_MESSAGE[_detect_lang(task)],
             )
 
     def _effective_planner_agents(self, task: dict[str, Any]) -> list[str]:
@@ -794,6 +946,8 @@ class OrchestratorAgent(BaseAgent):
     ) -> AgentMessage:
         """One-shot conversational reply for intent == chat."""
         messages = self._build_chat_messages(task)
+        lang = _detect_lang(task)
+        fallback_text = _CHAT_ERROR_FALLBACK[lang]
         reply: str
         error_kind: str | None = None
         try:
@@ -810,13 +964,13 @@ class OrchestratorAgent(BaseAgent):
                 reply = stripped
             else:
                 # Treat empty reply as failure so UI can warn.
-                reply = _CHAT_ERROR_FALLBACK
+                reply = fallback_text
                 error_kind = "empty_reply"
         except TimeoutError:
-            reply = _CHAT_ERROR_FALLBACK
+            reply = fallback_text
             error_kind = "timeout"
         except Exception:
-            reply = _CHAT_ERROR_FALLBACK
+            reply = fallback_text
             error_kind = "llm_failure"
 
         if error_kind is not None:
@@ -882,6 +1036,7 @@ class OrchestratorAgent(BaseAgent):
         state: AgentState,
         *,
         yield_to: list[AgentMessage] | None,
+        lang: str = "en",
     ) -> AgentMessage:
         """Call NasaApiTool inline; emit formatted assistant message."""
         endpoint = params.get("endpoint")
@@ -891,10 +1046,7 @@ class OrchestratorAgent(BaseAgent):
             return self._finalise_nasa(
                 state,
                 endpoint=endpoint,
-                text=(
-                    "The NASA discovery feature isn't available right now. "
-                    "Please try again later."
-                ),
+                text=_NASA_UNAVAILABLE_MESSAGE.get(lang, _NASA_UNAVAILABLE_MESSAGE["en"]),
                 result=None,
                 yield_to=yield_to,
             )
@@ -912,10 +1064,15 @@ class OrchestratorAgent(BaseAgent):
                 text = _format_neo(result, neo_date)
             else:
                 # Defensive: unknown endpoint matched sentinel.
+                unknown_text = (
+                    f"Endpoint NASA không xác định: {endpoint!r}."
+                    if lang == "vi"
+                    else f"Unknown NASA endpoint: {endpoint!r}."
+                )
                 return self._finalise_nasa(
                     state,
                     endpoint=endpoint,
-                    text=f"Unknown NASA endpoint: {endpoint!r}.",
+                    text=unknown_text,
                     result=None,
                     yield_to=yield_to,
                 )
@@ -923,7 +1080,7 @@ class OrchestratorAgent(BaseAgent):
             return self._finalise_nasa(
                 state,
                 endpoint=endpoint,
-                text=f"Couldn't reach NASA right now ({exc.code}). Try again shortly.",
+                text=_nasa_error_message(lang, str(exc.code)),
                 result=None,
                 yield_to=yield_to,
             )
@@ -935,6 +1092,141 @@ class OrchestratorAgent(BaseAgent):
             result=result,
             yield_to=yield_to,
         )
+
+    def _match_user_metadata(
+        self, task: dict[str, Any]
+    ) -> dict[str, Any] | None:
+        """Walk router rules for the user_metadata sentinel."""
+        for rule in self.router.rules:
+            try:
+                result = rule(task)
+            except Exception:
+                continue
+            if (
+                isinstance(result, tuple)
+                and len(result) == 2
+                and result[0] == _USER_METADATA_SENTINEL
+            ):
+                params = result[1]
+                if isinstance(params, dict):
+                    return params
+        return None
+
+    async def _handle_user_metadata(
+        self,
+        params: dict[str, Any],
+        state: AgentState,
+        *,
+        yield_to: list[AgentMessage] | None,
+        lang: str = "en",
+    ) -> AgentMessage:
+        """Cross-notebook structural queries via NotebookMetadataTool."""
+        operation = params.get("operation")
+        raw_question = params.get("raw_question") or ""
+        tool = self.get_tool("notebook_metadata")
+
+        if tool is None or state.user_id is None:
+            text = (
+                "Em chưa truy vấn được metadata lúc này."
+                if lang == "vi"
+                else "I can't look that up right now."
+            )
+            return self._finalise_user_metadata(
+                state,
+                operation=operation,
+                text=text,
+                result=None,
+                yield_to=yield_to,
+            )
+
+        try:
+            result = await tool(operation=operation, owner_id=state.user_id)
+        except Exception:  # noqa: BLE001 — never crash chat on a DB blip
+            text = (
+                "Em không truy vấn được metadata. Bạn thử lại sau nhé."
+                if lang == "vi"
+                else "I couldn't look that up. Please try again."
+            )
+            return self._finalise_user_metadata(
+                state,
+                operation=operation,
+                text=text,
+                result=None,
+                yield_to=yield_to,
+            )
+
+        # Best-effort LLM phrasing; deterministic fallback on failure.
+        text = await self._phrase_user_metadata(
+            raw_question=raw_question, tool_result=result, lang=lang,
+        )
+        return self._finalise_user_metadata(
+            state,
+            operation=operation,
+            text=text,
+            result=result,
+            yield_to=yield_to,
+        )
+
+    async def _phrase_user_metadata(
+        self,
+        *,
+        raw_question: str,
+        tool_result: dict[str, Any],
+        lang: str,
+    ) -> str:
+        system_prompt = (
+            "You are answering a structural question about the user's "
+            "notebooks/files using ONLY the JSON tool result below. State "
+            "counts and filenames plainly — never invent numbers, dates, or "
+            "filenames that aren't in the result. Keep it 1-2 sentences."
+        )
+        lang_clause = language_directive(lang)
+        if lang_clause:
+            system_prompt = f"{system_prompt}\n\n{lang_clause}"
+        user_prompt = (
+            f"User question: {raw_question}\n\n"
+            f"Tool result (JSON):\n{json.dumps(tool_result, default=str, ensure_ascii=False)}"
+        )
+        try:
+            raw = await asyncio.wait_for(
+                self.llm.complete(
+                    [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    temperature=0.2,
+                    max_tokens=200,
+                ),
+                timeout=_CHAT_RESPONSE_TIMEOUT_S,
+            )
+        except Exception:  # noqa: BLE001
+            return _user_metadata_fallback_text(tool_result, lang)
+        text = (raw or "").strip()
+        return text or _user_metadata_fallback_text(tool_result, lang)
+
+    @staticmethod
+    def _finalise_user_metadata(
+        state: AgentState,
+        *,
+        operation: Any,
+        text: str,
+        result: Any,
+        yield_to: list[AgentMessage] | None,
+    ) -> AgentMessage:
+        msg = AgentMessage(
+            role="assistant",
+            content=text,
+            extra={"metadata_query": True, "operation": operation},
+        )
+        state.append(msg)
+        state.final_output = {
+            "mode": "user_metadata",
+            "operation": operation,
+            "result": result,
+        }
+        if yield_to is not None:
+            yield_to.append(msg)
+        return msg
 
     def _match_web_search_direct(
         self, task: dict[str, Any]
@@ -1056,6 +1348,7 @@ class OrchestratorAgent(BaseAgent):
         state: AgentState,
         *,
         yield_to: list[AgentMessage] | None,
+        lang: str = "en",
     ) -> AgentMessage:
         """Fan out to CatalogAgent for Simbad/NED/VizieR in parallel.
 
@@ -1073,7 +1366,9 @@ class OrchestratorAgent(BaseAgent):
                 state,
                 query="",
                 raw_question=raw_question,
-                text=_FRIENDLY_FALLBACK_MESSAGE,
+                text=_FRIENDLY_FALLBACK_MESSAGE.get(
+                    lang, _FRIENDLY_FALLBACK_MESSAGE["en"]
+                ),
                 results=[],
                 yield_to=yield_to,
             )
@@ -1132,10 +1427,16 @@ class OrchestratorAgent(BaseAgent):
             )
 
         # All three returned empty → prompt user to confirm web fallback.
-        text = (
-            f"Không tìm thấy kết quả cho {query!r} trong Simbad, NED hay VizieR. "
-            "Bạn có muốn em tìm trên internet không?"
-        )
+        if lang == "vi":
+            text = (
+                f"Không tìm thấy kết quả cho {query!r} trong Simbad, NED hay VizieR. "
+                "Bạn có muốn em tìm trên internet không?"
+            )
+        else:
+            text = (
+                f"No results found for {query!r} in Simbad, NED, or VizieR. "
+                "Would you like me to search the web?"
+            )
         msg = AgentMessage(
             role="assistant",
             content=text,
@@ -1212,8 +1513,16 @@ class OrchestratorAgent(BaseAgent):
         state: AgentState,
         *,
         yield_to: list[AgentMessage] | None,
+        lang: str = "en",
     ) -> AgentMessage:
-        """Call WebSearchTool inline; emit formatted assistant message."""
+        """Call WebSearchTool inline; emit formatted assistant message.
+
+        Raw user messages like "Search internet tìm các thông tin về sao bằng"
+        are noisy to a web search engine — the "search internet" verb prefix
+        and trailing connector ("bằng") drown out the actual topic. Run a
+        cheap LLM rewrite first to strip verbs and surface the topic; fall
+        back to the original on any failure so search still runs.
+        """
         query_raw = params.get("query")
         query = (query_raw if isinstance(query_raw, str) else "").strip()
         tool = self.get_tool("web_search")
@@ -1222,36 +1531,109 @@ class OrchestratorAgent(BaseAgent):
             return self._finalise_web_search(
                 state,
                 query=query,
-                text=_WEB_SEARCH_UNAVAILABLE_MESSAGE,
-                results=[],
-                yield_to=yield_to,
-            )
-
-        try:
-            raw = await tool(
-                query=query,
-                max_results=_WEB_SEARCH_RENDER_LIMIT,
-            )
-        except (ToolError, ExternalServiceError) as exc:
-            return self._finalise_web_search(
-                state,
-                query=query,
-                text=(
-                    f"Couldn't search the web right now ({exc.code}). "
-                    "Try again shortly."
+                text=_WEB_SEARCH_UNAVAILABLE_MESSAGE.get(
+                    lang, _WEB_SEARCH_UNAVAILABLE_MESSAGE["en"]
                 ),
                 results=[],
                 yield_to=yield_to,
             )
 
+        rewritten = await self._rewrite_web_search_query(query, lang=lang)
+        # `effective` is what we actually send to the search engine; keep
+        # `query` (the user's raw words) for the response header so the
+        # rewrite is visible without surprising the user.
+        effective = rewritten or query
+
+        try:
+            raw = await tool(
+                query=effective,
+                max_results=_WEB_SEARCH_RENDER_LIMIT,
+            )
+        except (ToolError, ExternalServiceError) as exc:
+            return self._finalise_web_search(
+                state,
+                query=effective,
+                text=_web_search_error_message(lang, str(exc.code)),
+                results=[],
+                yield_to=yield_to,
+            )
+
         results = raw if isinstance(raw, list) else []
+        # Use a short header when results exist (FE renders cards from extras);
+        # fall back to the legacy formatted list when no URLs were returned so
+        # the chat bubble still has something to say.
+        cards = _normalise_web_search_cards(results)
+        if cards:
+            text = _format_web_search_header(
+                lang, effective, len(cards),
+                original=query if effective != query else None,
+            )
+        else:
+            text = _format_web_search(effective, results)
         return self._finalise_web_search(
             state,
-            query=query,
-            text=_format_web_search(query, results),
+            query=effective,
+            text=text,
             results=results,
             yield_to=yield_to,
         )
+
+    async def _rewrite_web_search_query(
+        self, raw_query: str, *, lang: str
+    ) -> str | None:
+        """Strip command verbs and trim to a clean search query via LLM.
+
+        Returns the rewrite or None when the LLM call fails / returns empty
+        / returns something pathological (e.g. wraps the whole thing in
+        quotes again). Caller treats None as "use the raw query".
+        """
+        # Very short queries are already clean — skip the rewrite tax.
+        if len(raw_query) <= 20:
+            return None
+
+        system = (
+            "Rewrite the user's message into a concise web-search query. "
+            "Drop command verbs like 'search the internet', 'tìm trên mạng', "
+            "'lookup online' — those describe the action, not the topic. "
+            "Drop trailing connectors that got cut off ('bằng', 'của', 'để', "
+            "'với', 'with', 'about' at the very end). Keep proper nouns, "
+            "numbers, and field-specific terms verbatim. Output ONLY the "
+            "rewritten query — no quotes, no preamble, no markdown. Keep "
+            "it under 12 words and in the SAME language as the user's "
+            "message."
+        )
+        try:
+            raw = await asyncio.wait_for(
+                self.llm.complete(
+                    [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": raw_query},
+                    ],
+                    temperature=0.0,
+                    max_tokens=60,
+                ),
+                timeout=5.0,
+            )
+        except Exception:  # noqa: BLE001 — rewrite is best-effort
+            return None
+        cleaned = (raw or "").strip().strip("\"'`")
+        if not cleaned:
+            return None
+        # Reject pathological rewrites: identical, just-as-long, or a refusal.
+        if cleaned.lower() == raw_query.lower():
+            return None
+        if len(cleaned) > len(raw_query) * 1.5:
+            return None
+        first_word = cleaned.split(maxsplit=1)[0].lower()
+        if first_word in {"i", "sorry", "xin", "tôi", "em"}:
+            return None
+        # Backstop the prompt instruction — LLMs (esp. llama-3.3) often
+        # ignore the trailing-connector rule. Repeatedly strip until no
+        # connector is at the tail.
+        cleaned = _strip_trailing_connectors(cleaned)
+        if not cleaned or len(cleaned) < 2:
+            return None
+        return cleaned
 
     @staticmethod
     def _finalise_web_search(
@@ -1262,7 +1644,15 @@ class OrchestratorAgent(BaseAgent):
         results: list[Any],
         yield_to: list[AgentMessage] | None,
     ) -> AgentMessage:
-        msg = AgentMessage(role="assistant", content=text)
+        # Structured payload so the FE can render clickable cards instead of
+        # the plain-text URL dump. Normalise to title/url/snippet/source so
+        # the FE doesn't have to know about provider-specific schemas.
+        cards = _normalise_web_search_cards(results)
+        extra: dict[str, Any] = {}
+        if cards:
+            extra["web_search_results"] = cards
+            extra["web_search_query"] = query
+        msg = AgentMessage(role="assistant", content=text, extra=extra)
         state.append(msg)
         state.final_output = {
             "mode": "web_search",
@@ -1343,12 +1733,13 @@ class OrchestratorAgent(BaseAgent):
         )
 
     @staticmethod
-    def _emit_off_topic(state: AgentState) -> AgentMessage:
-        msg = AgentMessage(role="assistant", content=_OFF_TOPIC_DECLINE_MESSAGE)
+    def _emit_off_topic(state: AgentState, *, lang: str = "en") -> AgentMessage:
+        text = _OFF_TOPIC_DECLINE_MESSAGE.get(lang, _OFF_TOPIC_DECLINE_MESSAGE["en"])
+        msg = AgentMessage(role="assistant", content=text)
         state.append(msg)
         state.final_output = {
             "mode": "off_topic",
-            "response": _OFF_TOPIC_DECLINE_MESSAGE,
+            "response": text,
         }
         return msg
 
@@ -1538,9 +1929,10 @@ class OrchestratorAgent(BaseAgent):
         )
 
     @staticmethod
-    def _empty_output(plan: TaskPlan) -> dict[str, Any]:
+    def _empty_output(plan: TaskPlan, *, lang: str = "en") -> dict[str, Any]:
+        fallback = _FRIENDLY_FALLBACK_MESSAGE.get(lang, _FRIENDLY_FALLBACK_MESSAGE["en"])
         return {
-            "summary": plan.summary or _FRIENDLY_FALLBACK_MESSAGE,
+            "summary": plan.summary or fallback,
             "step_outputs": {},
         }
 
@@ -1587,6 +1979,109 @@ def _format_catalog_multi(
         f"🔭 Catalog results for {query!r} — {summary}. "
         f"Open the table on the right for full rows."
     )
+
+
+def _user_metadata_fallback_text(result: dict[str, Any], lang: str) -> str:
+    """Deterministic phrasing when the LLM synth step fails or empties out."""
+    op = result.get("operation") if isinstance(result, dict) else None
+    vi = lang == "vi"
+    if op == "count_notebooks":
+        n = result.get("count", 0)
+        return f"Bạn có {n} notebook." if vi else f"You have {n} notebook(s)."
+    if op == "count_documents":
+        n = result.get("count", 0)
+        return (
+            f"Bạn đã upload tổng cộng {n} tài liệu."
+            if vi
+            else f"You've uploaded {n} document(s) in total."
+        )
+    if op == "latest_document":
+        doc = result.get("document") or {}
+        name = doc.get("filename") if isinstance(doc, dict) else None
+        if not name:
+            return "Chưa có tài liệu nào." if vi else "No documents yet."
+        return (
+            f"File upload gần nhất: {name}."
+            if vi
+            else f"Most recent upload: {name}."
+        )
+    if op == "list_notebooks":
+        nbs = result.get("notebooks") or []
+        if not nbs:
+            return "Bạn chưa có notebook nào." if vi else "You have no notebooks yet."
+        names = ", ".join(n.get("title", "?") for n in nbs[:5])
+        more = f" (+{len(nbs) - 5})" if len(nbs) > 5 else ""
+        return (
+            f"Notebooks của bạn: {names}{more}."
+            if vi
+            else f"Your notebooks: {names}{more}."
+        )
+    return "Không có dữ liệu." if vi else "No data."
+
+
+# Conjunctions/prepositions that often dangle at the end of a half-typed
+# query and confuse search engines if left in. Stripped post-rewrite.
+_TRAILING_CONNECTOR_TOKENS: Final[frozenset[str]] = frozenset(
+    {
+        # EN
+        "the", "a", "an", "of", "for", "with", "about", "on", "in", "at",
+        "to", "and", "or", "by", "from",
+        # VN
+        "bằng", "của", "để", "với", "về", "và", "hoặc", "từ", "trên", "trong",
+        "khi", "là", "thì", "mà", "cho", "tại", "theo",
+    }
+)
+
+
+def _strip_trailing_connectors(text: str) -> str:
+    """Trim dangling conjunctions/prepositions from the tail of a query."""
+    tokens = text.strip().split()
+    while tokens and tokens[-1].lower().strip(".,?!;:") in _TRAILING_CONNECTOR_TOKENS:
+        tokens.pop()
+    return " ".join(tokens)
+
+
+def _format_web_search_header(
+    lang: str, query: str, count: int, *, original: str | None = None
+) -> str:
+    """Header sentence above the result cards. When the query got rewritten,
+    surface both the rewrite and the user's original wording so it's clear
+    why the results look different from the literal question."""
+    if lang == "vi":
+        suffix = (
+            f" (rút gọn từ {original!r})" if original else ""
+        )
+        return (
+            f"🔍 Tìm thấy {count} kết quả trên web cho {query!r}{suffix}. "
+            "Bấm vào kết quả bên dưới để mở liên kết."
+        )
+    suffix = f" (rewritten from {original!r})" if original else ""
+    return (
+        f"🔍 Found {count} web results for {query!r}{suffix}. "
+        "Click a result below to open the link."
+    )
+
+
+def _normalise_web_search_cards(results: list[Any]) -> list[dict[str, Any]]:
+    """Project WebSearchTool rows to the {title, url, snippet, source} shape
+    the FE renderer expects. Drops rows without a URL (un-clickable)."""
+    cards: list[dict[str, Any]] = []
+    for raw in results[:_WEB_SEARCH_RENDER_LIMIT]:
+        if not isinstance(raw, dict):
+            continue
+        url = str(raw.get("url") or "").strip()
+        if not url:
+            continue
+        title = str(raw.get("title") or "").strip() or url
+        snippet = str(raw.get("snippet") or "").strip()
+        source = str(raw.get("source") or raw.get("provider") or "").strip() or None
+        cards.append({
+            "title": title,
+            "url": url,
+            "snippet": snippet,
+            "source": source,
+        })
+    return cards
 
 
 def _format_web_search(query: str, results: list[Any]) -> str:

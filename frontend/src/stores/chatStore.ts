@@ -65,6 +65,10 @@ export type ChatMessage = {
   errorKind?: string;
   citations?: Citation[];
   catalogGrounding?: CatalogGrounding;
+  // Structured web-search results — rendered as clickable cards in the
+  // bubble so users don't see a plain-text URL dump.
+  webSearchResults?: WebSearchResult[];
+  webSearchQuery?: string;
   // Set when the orchestrator wants the FE to render a "search the web?" CTA
   // after an empty catalog search. `query` is the original user question.
   confirmWebSearch?: { query: string };
@@ -102,6 +106,15 @@ export type CatalogGrounding = {
   row_count: number;
   rows: CatalogGroundingRow[];
   web_sources?: CatalogGroundingWebSource[];
+};
+
+// Backend emits this on assistant.extra.web_search_results when a
+// _rule_web_search hit (general mode "search the web / tìm trên mạng").
+export type WebSearchResult = {
+  title: string;
+  url: string;
+  snippet: string;
+  source: string | null;
 };
 
 // Scrollback cap; persistence is a hot cache, DB is source of truth.
@@ -285,6 +298,23 @@ function parseCitations(raw: unknown): Citation[] | undefined {
   return out.length > 0 ? out : undefined;
 }
 
+function parseWebSearchResults(raw: unknown): WebSearchResult[] | undefined {
+  if (!Array.isArray(raw) || raw.length === 0) return undefined;
+  const out: WebSearchResult[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const r = item as Record<string, unknown>;
+    if (typeof r.url !== "string" || !r.url) continue;
+    out.push({
+      title: typeof r.title === "string" && r.title ? r.title : r.url,
+      url: r.url,
+      snippet: typeof r.snippet === "string" ? r.snippet : "",
+      source: typeof r.source === "string" && r.source ? r.source : null,
+    });
+  }
+  return out.length > 0 ? out : undefined;
+}
+
 function parseCatalogGrounding(raw: unknown): CatalogGrounding | undefined {
   if (!raw || typeof raw !== "object") return undefined;
   const g = raw as Record<string, unknown>;
@@ -329,6 +359,12 @@ export type LastCatalogSearch = {
   results: CatalogObject[];
 };
 
+// FITS-mode toolbar intent override. Pinning here lets the chat composer
+// preface the user's question with a specific routing hint (analyze, report,
+// discuss, qa) that the backend FitsAnalystAgent uses instead of sniffing
+// the question text. `null` = auto-detect from the question.
+export type FitsIntent = "analyze" | "report" | "discuss" | "qa";
+
 type ChatStore = {
   messages: ChatMessage[];
   // Server-minted on first send; null until BE confirms; cleared on clearChat.
@@ -338,6 +374,8 @@ type ChatStore = {
   // Mirrors BE session_fits_files join.
   attachedFitsFileIds: string[];
   lastCatalogSearch: LastCatalogSearch | null;
+  // FITS-mode toolbar override; null = let backend classify from question text.
+  fitsIntent: FitsIntent | null;
   // Mirrors useAgentStream so non-chat surfaces can read without mounting it.
   isStreaming: boolean;
   // Reasoning trail being built for the in-progress assistant turn; null when idle.
@@ -353,6 +391,7 @@ type ChatStore = {
   setStreaming: (value: boolean) => void;
   setReconnecting: (value: boolean) => void;
   setLastCatalogSearch: (search: LastCatalogSearch | null) => void;
+  setFitsIntent: (intent: FitsIntent | null) => void;
   setAttachedFitsFileIds: (ids: string[]) => void;
   addAttachedFitsFileId: (id: string) => void;
   removeAttachedFitsFileId: (id: string) => void;
@@ -381,6 +420,7 @@ export const useChatStore = create<ChatStore>()(
       isReconnecting: false,
       isLoadingSession: false,
       lastCatalogSearch: null,
+      fitsIntent: null,
 
       setMessages: (messages) => set({ messages, pendingReasoning: null }),
 
@@ -424,6 +464,8 @@ export const useChatStore = create<ChatStore>()(
 
       setLastCatalogSearch: (search) => set({ lastCatalogSearch: search }),
 
+      setFitsIntent: (intent) => set({ fitsIntent: intent }),
+
       setAttachedFitsFileIds: (ids) => set({ attachedFitsFileIds: ids }),
 
       addAttachedFitsFileId: (id) =>
@@ -451,6 +493,7 @@ export const useChatStore = create<ChatStore>()(
           pendingReasoning: null,
           isReconnecting: false,
           lastCatalogSearch: null,
+          fitsIntent: null,
         });
         // Reset per-conversation FITS pointers; keep user-scoped MRUs.
         const astro = useAstronomyStore.getState();
@@ -516,6 +559,11 @@ export const useChatStore = create<ChatStore>()(
               aggregatedReasoning: parseAggregatedReasoning(extra.reasoning),
               citations: parseCitations(extra.citations),
               catalogGrounding: parseCatalogGrounding(extra.catalog_grounding),
+              webSearchResults: parseWebSearchResults(extra.web_search_results),
+              webSearchQuery:
+                typeof extra.web_search_query === "string"
+                  ? extra.web_search_query
+                  : undefined,
               createdAt: m.created_at,
             };
           });

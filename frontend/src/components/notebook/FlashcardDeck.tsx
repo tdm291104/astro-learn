@@ -37,7 +37,7 @@ type Screen = "config" | "deck";
 
 export function FlashcardDeck({ notebookId }: { notebookId: string }) {
   const [screen, setScreen] = useState<Screen>("config");
-  const [config, setConfig] = useState<Required<FlashcardRequest>>({
+  const [config, setConfig] = useState<Required<Omit<FlashcardRequest, "language">>>({
     n_cards: DEFAULT_CARDS,
   });
   const [cards, setCards] = useState<Flashcard[] | null>(null);
@@ -123,8 +123,8 @@ function ConfigScreen({
   onChange,
   onGenerate,
 }: {
-  config: Required<FlashcardRequest>;
-  onChange: (c: Required<FlashcardRequest>) => void;
+  config: Required<Omit<FlashcardRequest, "language">>;
+  onChange: (c: Required<Omit<FlashcardRequest, "language">>) => void;
   onGenerate: () => void;
 }) {
   const { t } = useT();

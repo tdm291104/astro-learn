@@ -719,6 +719,10 @@ class NotebookService:
         # Agent has no DB access — inject source count from here.
         await self._load_owned(notebook_id, owner_id)
         source_document_count = await self.documents.count_for_notebook(notebook_id)
+        # Filenames give the LLM anchoring context so it doesn't drift into
+        # describing cited works as if they were the main paper.
+        docs = await self.documents.list_for_notebook(notebook_id, limit=20)
+        source_filenames = [d.filename for d in docs if d.filename]
 
         # session_id=None: per-notebook artifact, not chat — avoid mint on regen.
         task: dict[str, Any] = {
@@ -726,7 +730,10 @@ class NotebookService:
             "max_bullets": request.max_bullets,
             "style": request.style,
             "source_document_count": source_document_count,
+            "source_filenames": source_filenames,
         }
+        if request.language:
+            task["language"] = request.language
         output = await self._run_agent("summarizer", owner_id, None, task)
 
         response = SummarizeResponse(
@@ -753,11 +760,15 @@ class NotebookService:
         await self._load_owned(notebook_id, owner_id)
 
         # session_id=None: see run_summarize.
+        docs = await self.documents.list_for_notebook(notebook_id, limit=20)
         task: dict[str, Any] = {
             "notebook_id": str(notebook_id),
             "n_questions": request.n_questions,
             "difficulty": request.difficulty,
+            "source_filenames": [d.filename for d in docs if d.filename],
         }
+        if request.language:
+            task["language"] = request.language
         output = await self._run_agent("quiz", owner_id, None, task)
 
         response = QuizResponse(
@@ -784,10 +795,14 @@ class NotebookService:
         await self._load_owned(notebook_id, owner_id)
 
         # session_id=None: see run_summarize.
+        docs = await self.documents.list_for_notebook(notebook_id, limit=20)
         task: dict[str, Any] = {
             "notebook_id": str(notebook_id),
             "n_cards": request.n_cards,
+            "source_filenames": [d.filename for d in docs if d.filename],
         }
+        if request.language:
+            task["language"] = request.language
         output = await self._run_agent("flashcard", owner_id, None, task)
 
         response = FlashcardResponse(

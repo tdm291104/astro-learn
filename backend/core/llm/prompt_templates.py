@@ -128,23 +128,48 @@ QA_FROM_CONTEXT: Final[str] = (
     "documents.' Do not invent facts.\n\nContext:\n{context}"
 )
 
+_ANTI_HALLUCINATION: Final[str] = (
+    "Grounding rules (HARD CONSTRAINTS — violating these is a failure):\n"
+    "- Summarise ONLY what the supplied source text actually says. If a "
+    "claim, number, date, author, journal name, or citation is not in the "
+    "source, do NOT include it.\n"
+    "- Never invent publication years, journal names, or DOIs. If the "
+    "source does not state when the paper was published, omit that detail.\n"
+    "- The source chunks may include the paper's references/bibliography "
+    "section. Do NOT summarise the references as if they were the paper's "
+    "own work — focus on the paper's own contributions (abstract, intro, "
+    "methods, results, conclusion). Cited works are background, not the "
+    "main subject.\n"
+    "- If the source seems fragmentary, garbled, or you cannot tell what "
+    "the paper is about, say so honestly rather than guessing.\n"
+    "- Do not use third-person review phrasing (\"the authors of this "
+    "study propose…\" is fine; \"this work has been widely cited\" is "
+    "fabrication unless the source says so)."
+)
+
+
 SUMMARIZER: Final[str] = (
     "{house_style}\n\n"
     "Summarize the document in {max_bullets} bullet points. Preserve "
-    "technical terms and any numerical values verbatim."
+    "technical terms and any numerical values verbatim.\n\n"
+    + _ANTI_HALLUCINATION
 )
 
 QUIZ_GENERATOR: Final[str] = (
     "{house_style}\n\n"
     "Generate {n_questions} multiple-choice questions from the source "
     "material. Each question must have exactly 4 options and a single "
-    "correct answer.\n\n{json_only}"
+    "correct answer.\n\n"
+    + _ANTI_HALLUCINATION
+    + "\n\n{json_only}"
 )
 
 FLASHCARD_GENERATOR: Final[str] = (
     "{house_style}\n\n"
     "Generate {n_cards} flashcards (front/back) covering the key concepts. "
-    "Front is a short prompt; back is a 1-3 sentence answer.\n\n{json_only}"
+    "Front is a short prompt; back is a 1-3 sentence answer.\n\n"
+    + _ANTI_HALLUCINATION
+    + "\n\n{json_only}"
 )
 
 DATA_ANALYST_TOOL_LOOP: Final[str] = (
@@ -178,6 +203,35 @@ def render(template: str, **kwargs: object) -> str:
     }
     defaults.update(kwargs)
     return template.format(**defaults)
+
+
+_LANGUAGE_NAMES: Final[dict[str, str]] = {
+    "vi": "Vietnamese (tiếng Việt)",
+    "en": "English",
+}
+
+
+def language_directive(language: str | None) -> str:
+    """Explicit per-call language override; empty when auto-detect is fine.
+
+    Source documents may be in a different language than the requesting
+    user. Without an explicit pin the LLM tends to mirror the source's
+    language, which is why notebook summaries/quizzes/flashcards came out
+    in English when the source PDFs were English even though the UI locale
+    was Vietnamese.
+    """
+    if not language:
+        return ""
+    name = _LANGUAGE_NAMES.get(language.lower())
+    if name is None:
+        return ""
+    return (
+        f"OUTPUT LANGUAGE: Write all natural-language text in {name}. "
+        "This applies to summaries, questions, options, explanations, and "
+        "any other prose, even if the source documents are written in a "
+        "different language. JSON keys and field names stay in English; "
+        "only the string VALUES the user reads are localised."
+    )
 
 
 # Raw string (no str.format) so literal JSON braces survive; sync with

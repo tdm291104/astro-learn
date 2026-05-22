@@ -288,11 +288,18 @@ def _rule_fits_mode_to_fits_analyst(task: dict[str, Any]) -> RuleResult:
     file_id = task.get("file_id")
     if file_id is None:
         return None
-    return "fits_analyst", {
+    task_input: dict[str, Any] = {
         "file_id": file_id,
         "hdu_index": task.get("hdu_index", 0),
         "query": task.get("query") or task.get("question"),
     }
+    # FE can pin an intent via toolbar buttons (e.g. "Generate report" /
+    # "Discuss previous"). Agent falls back to query-text classification
+    # when the field is absent — that's the chat-typing path.
+    intent = task.get("intent") or task.get("fits_intent")
+    if intent in ("qa", "analyze", "report", "discuss"):
+        task_input["intent"] = intent
+    return "fits_analyst", task_input
 
 
 def _rule_catalog_followup(task: dict[str, Any]) -> RuleResult:
@@ -523,14 +530,108 @@ def _rule_catalog_mode_search(task: dict[str, Any]) -> RuleResult:
     }
 
 
+# Sentinel routed inline by orchestrator._handle_user_metadata.
+# Used for cross-notebook structural questions ("how many notebooks have I
+# created?", "đã upload bao nhiêu docs?") that QAAgent can't serve because
+# they need an owner-id scope, not a notebook-id scope.
+_USER_METADATA_AGENT: Final[str] = "user_metadata"
+
+_USER_METADATA_PATTERNS: Final[list[tuple[str, re.Pattern[str]]]] = [
+    (
+        "count_notebooks",
+        re.compile(
+            r"\b(?:how\s+many|total\s+number\s+of)\s+notebooks?\b"
+            r"|c[óo]\s+(?:t[ổô]ng\s+c[ộo]ng\s+)?bao\s+nhi[êe]u\s+notebooks?"
+            r"|đ[ãa]\s+t[ạa]o\s+(?:bao\s+nhi[êe]u|đư[ợo]c\s+m[ấa]y)\s+notebooks?",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "count_documents",
+        re.compile(
+            r"\b(?:how\s+many|total\s+number\s+of)\s+"
+            r"(?:docs?|documents?|files?|tài\s*li[ệe]u|pdfs?)\b"
+            r"|đ[ãa]\s+upload\s+(?:bao\s+nhi[êe]u|đư[ợo]c\s+m[ấa]y)"
+            r"|c[óo]\s+bao\s+nhi[êe]u\s+(?:docs?|tài\s*li[ệe]u|file|pdfs?)",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "latest_document",
+        re.compile(
+            r"\b(?:latest|newest|most\s+recent)\s+"
+            r"(?:doc|document|file|upload|pdf)\b"
+            r"|(?:docs?|tài\s*li[ệe]u|file)\s+m[ớo]i\s+(?:nh[ấa]t|upload|t[ảa]i\s+l[êe]n)"
+            r"|m[ớo]i\s+upload\s+(?:t[êe]n\s+gì|file\s+gì)",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "list_notebooks",
+        re.compile(
+            r"\b(?:list|show\s+(?:me\s+)?(?:all\s+)?|name(?:s)?\s+of)\s+"
+            r"(?:my\s+|all\s+)?notebooks?\b"
+            r"|li[ệe]t\s+k[êe]\s+(?:các\s+)?notebooks?"
+            r"|t[êe]n\s+(?:các\s+)?notebooks?\s+(?:của\s+t[ôo]i)?",
+            re.IGNORECASE,
+        ),
+    ),
+]
+
+
+def _rule_user_metadata(task: dict[str, Any]) -> RuleResult:
+    """Cross-notebook structural questions — owner-scope, no notebook_id.
+
+    Only fires when no notebook/file context is bound (otherwise the question
+    is about THIS notebook and QAAgent's metadata branch handles it).
+    """
+    if task.get("notebook_id") or task.get("file_id"):
+        return None
+    blob = _free_text_blob(task)
+    if not blob:
+        return None
+    for operation, pattern in _USER_METADATA_PATTERNS:
+        if pattern.search(blob):
+            return _USER_METADATA_AGENT, {
+                "operation": operation,
+                "raw_question": _extract_query_text(task) or blob,
+            }
+    return None
+
+
 # Sentinel routed inline by orchestrator._handle_web_search_direct.
 _WEB_SEARCH_DIRECT_AGENT: Final[str] = "web_search_direct"
 
-_WEB_SEARCH_RE: Final[re.Pattern[str]] = re.compile(
+# Explicit "use the web" verbs — user is asking for an external search by name.
+# Matches in either language and OVERRIDES the astronomy-keyword guard so a
+# "search internet về thiên văn" turn doesn't get hijacked back into catalog.
+# `(?:internet|interne|internt|intrnet)` covers common typos ("internt", "internet", "interne") so a
+# missed "e" doesn't drop the request all the way to the planner LLM (which
+# then hallucinates a catalog call with bogus enum values).
+_WEB_SEARCH_EXPLICIT_RE: Final[re.Pattern[str]] = re.compile(
+    r"\bsearch\s+(?:the\s+)?(?:web|(?:internet|interne|internt|intrnet)|online|google)\b"
+    r"|\blook\s+(?:it\s+|this\s+)?up\s+(?:online|on\s+the\s+web|on\s+the\s+(?:internet|interne|internt|intrnet))\b"
+    r"|\bfind\s+(?:it\s+|this\s+)?online\b"
+    r"|\bgoogle\s+(?:it|this|for|search)\b"
+    r"|\bweb\s+search\b"
+    # VN: "tìm trên mạng/internet/web/google", with/without diacritics.
+    r"|t[ìi]m\s+(?:hi[ểe]u\s+)?(?:tr[êe]n\s+)?(?:m[ạa]ng|(?:internet|interne|internt|intrnet)|web|google)"
+    # VN: "tra (cứu) trên mạng/internet/google".
+    r"|tra\s+(?:c[ứu]u\s+)?(?:tr[êe]n\s+)?(?:m[ạa]ng|(?:internet|interne|internt|intrnet)|web|google)"
+    # VN: "lên mạng/internet tìm", "lên google tìm/tra".
+    r"|l[êe]n\s+(?:m[ạa]ng|(?:internet|interne|internt|intrnet)|google)\s+(?:t[ìi]m|tra)"
+    # VN: "search internet" literal (user mixes English verb with VN text).
+    r"|search\s+(?:m[ạa]ng|(?:internet|interne|internt|intrnet))",
+    re.IGNORECASE,
+)
+
+# Soft signals (recency / news vocabulary) — only fire when no astronomy
+# keyword is present, since "latest pulsar discovery" should hit catalog.
+_WEB_SEARCH_SOFT_RE: Final[re.Pattern[str]] = re.compile(
     r"\b(?:latest|recent(?:ly)?|news|current(?:ly)?|"
-    r"search\s+the\s+web|look\s+up\s+online|find\s+online|"
     r"what\s+happened|this\s+week|this\s+year|"
-    r"2024|2025|2026)\b",
+    r"2024|2025|2026)\b"
+    r"|\bm[ớo]i\s+nh[ấa]t\b|\bg[ầa]n\s+đ[âa]y\b|\btin\s+t[ứu]c\b",
     re.IGNORECASE,
 )
 
@@ -539,7 +640,9 @@ def _rule_web_search(task: dict[str, Any]) -> RuleResult:
     """'Look it up online' asks → web_search_direct sentinel.
 
     Honours `force_web_search=True` (set by FE when user confirms after a
-    catalog-empty result) regardless of other heuristics.
+    catalog-empty result) regardless of other heuristics. Explicit "search
+    the web" verbs (EN + VN) win over the astronomy-keyword guard; soft
+    recency signals defer to catalog when an astronomy term is present.
     """
     if task.get("force_web_search") is True:
         query = _extract_query_text(task)
@@ -551,13 +654,17 @@ def _rule_web_search(task: dict[str, Any]) -> RuleResult:
     blob = _free_text_blob(task)
     if not blob:
         return None
-    # Astronomy catalog asks have their own path.
-    if _ASTRONOMY_RE.search(blob):
-        return None
-    if not _WEB_SEARCH_RE.search(blob):
-        return None
     query = _extract_query_text(task)
     if not query:
+        return None
+    # Explicit verb — user typed "search the web" / "tìm trên mạng"; honour it
+    # even if the topic also happens to be astronomical.
+    if _WEB_SEARCH_EXPLICIT_RE.search(blob):
+        return _WEB_SEARCH_DIRECT_AGENT, {"query": query}
+    # Soft signal — catalog wins for astronomy targets.
+    if _ASTRONOMY_RE.search(blob):
+        return None
+    if not _WEB_SEARCH_SOFT_RE.search(blob):
         return None
     return _WEB_SEARCH_DIRECT_AGENT, {"query": query}
 
@@ -594,6 +701,7 @@ DEFAULT_RULES: list[RoutingRule] = [
     _rule_qa_to_qa_agent,
     _rule_apod,
     _rule_neo,
+    _rule_user_metadata,
     _rule_catalog,
     _rule_web_search,
 ]

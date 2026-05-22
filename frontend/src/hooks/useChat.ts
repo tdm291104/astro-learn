@@ -7,6 +7,7 @@ import { useAgentStream } from "@/hooks/useAgentStream";
 import { analysisKeys } from "@/hooks/useAnalysis";
 import { sessionKeys } from "@/hooks/useSessions";
 import { useAstronomyStore } from "@/stores/astronomyStore";
+import { useLocaleStore } from "@/stores/localeStore";
 import {
   useChatStore,
   type CatalogGrounding,
@@ -15,6 +16,7 @@ import {
   type ChatMessage,
   type PlannedStepInfo,
   type ReasoningPayload,
+  type WebSearchResult,
 } from "@/stores/chatStore";
 import type { AgentMessage } from "@/types/agent.types";
 import type { AnalysisType } from "@/types/astronomy.types";
@@ -110,6 +112,11 @@ function toChatMessage(msg: AgentMessage): ChatMessage {
     typeof extra.error_kind === "string" ? extra.error_kind : undefined;
   const citations = extractCitations(extra.citations);
   const catalogGrounding = extractCatalogGrounding(extra.catalog_grounding);
+  const webSearchResults = extractWebSearchResults(extra.web_search_results);
+  const webSearchQuery =
+    typeof extra.web_search_query === "string"
+      ? extra.web_search_query
+      : undefined;
   const reasoning = extractReasoning(extra);
   const confirmWebSearch = extractConfirmWebSearch(extra);
   const suggestPanel = extractSuggestPanel(extra);
@@ -128,11 +135,30 @@ function toChatMessage(msg: AgentMessage): ChatMessage {
     errorKind,
     citations,
     catalogGrounding,
+    webSearchResults,
+    webSearchQuery,
     confirmWebSearch,
     suggestPanel,
     suggestMode,
     createdAt: msg.created_at || new Date().toISOString(),
   };
+}
+
+function extractWebSearchResults(raw: unknown): WebSearchResult[] | undefined {
+  if (!Array.isArray(raw) || raw.length === 0) return undefined;
+  const out: WebSearchResult[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const r = item as Record<string, unknown>;
+    if (typeof r.url !== "string" || !r.url) continue;
+    out.push({
+      title: typeof r.title === "string" && r.title ? r.title : r.url,
+      url: r.url,
+      snippet: typeof r.snippet === "string" ? r.snippet : "",
+      source: typeof r.source === "string" && r.source ? r.source : null,
+    });
+  }
+  return out.length > 0 ? out : undefined;
 }
 
 // Read `extra.suggest_mode` shape from orchestrator mode-hint replies.
@@ -344,7 +370,11 @@ export function useChat() {
       // History lives server-side; task_input only carries this turn.
       // Always pass the active mode so backend rules (mode-mismatch hint,
       // resource binding guards) see the same context the user sees.
-      const taskInput: Record<string, unknown> = { query: text, mode };
+      // locale follows the i18n switcher so notebook outputs (summary,
+      // quiz, flashcards) match the UI language regardless of source-doc
+      // language.
+      const locale = useLocaleStore.getState().locale;
+      const taskInput: Record<string, unknown> = { query: text, mode, locale };
       // Only attach notebook_id in notebook mode to avoid leaking it.
       if (mode === "notebook" && notebookId) {
         taskInput.notebook_id = notebookId;
@@ -357,6 +387,11 @@ export function useChat() {
         if (selectedFileId) {
           taskInput.file_id = selectedFileId;
           taskInput.hdu_index = selectedHduIndex;
+        }
+        // Toolbar pin overrides the backend text-classifier; null = auto.
+        const intent = useChatStore.getState().fitsIntent;
+        if (intent) {
+          taskInput.intent = intent;
         }
       }
       // Attach last results so _rule_catalog_followup picks CatalogChatAgent;

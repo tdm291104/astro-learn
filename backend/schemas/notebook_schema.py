@@ -151,6 +151,9 @@ class SummarizeRequest(BaseModel):
 
     max_bullets: int = Field(7, ge=3, le=20)
     style: Literal["bullets", "paragraph"] = "bullets"
+    # FE i18n locale ('en' / 'vi'); pins output language so summaries don't
+    # default to the source documents' language. Optional for legacy callers.
+    language: str | None = None
 
 
 class SummarizeResponse(BaseModel):
@@ -174,6 +177,7 @@ class QuizRequest(BaseModel):
 
     n_questions: int = Field(5, ge=1, le=30)
     difficulty: Literal["easy", "medium", "hard"] = "medium"
+    language: str | None = None
 
 
 class QuizResponse(BaseModel):
@@ -193,6 +197,7 @@ class FlashcardRequest(BaseModel):
     """Body for POST /notebooks/{id}/flashcards."""
 
     n_cards: int = Field(10, ge=1, le=50)
+    language: str | None = None
 
 
 class FlashcardResponse(BaseModel):

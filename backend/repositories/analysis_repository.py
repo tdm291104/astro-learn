@@ -7,7 +7,7 @@ from collections.abc import Sequence
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from models.analysis_model import AnalysisModel
 from repositories.base_repository import BaseRepository
@@ -98,6 +98,37 @@ class AnalysisRepository(BaseRepository[AnalysisModel]):
         await self.session.flush()
         await self.session.refresh(instance)
         return instance
+
+    async def count_distinct_files(self, owner_id: uuid.UUID) -> int:
+        """Number of unique FITS files this owner has analysed at least once.
+
+        Dashboard previously displayed `COUNT(*) FROM analyses` for the
+        "FITS analyzed" card, which double-counted files that received
+        multiple analysis runs (also amplified by dup uploads pre-dedup).
+        """
+        stmt = (
+            select(func.count(func.distinct(AnalysisModel.file_id)))
+            .where(AnalysisModel.owner_id == owner_id)
+        )
+        result = await self.session.execute(stmt)
+        return int(result.scalar_one() or 0)
+
+    async def list_succeeded_for_file(
+        self,
+        file_id: uuid.UUID,
+        *,
+        limit: int = 10,
+    ) -> Sequence[AnalysisModel]:
+        """Newest-first succeeded analyses, used by the 'discuss prior' intent."""
+        stmt = (
+            select(AnalysisModel)
+            .where(AnalysisModel.file_id == file_id)
+            .where(AnalysisModel.status == "succeeded")
+            .order_by(AnalysisModel.created_at.desc())
+            .limit(limit)
+        )
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
 
     async def set_interpretation(
         self,

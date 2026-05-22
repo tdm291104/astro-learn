@@ -98,3 +98,24 @@ class FitsFileRepository(BaseRepository[FitsFileModel]):
         stmt = select(func.coalesce(func.sum(FitsFileModel.size_bytes), 0))
         result = await self.session.execute(stmt)
         return int(result.scalar_one() or 0)
+
+    async def find_by_owner_hash(
+        self,
+        owner_id: uuid.UUID,
+        content_hash: str,
+    ) -> FitsFileModel | None:
+        """Return the existing FITS row with this exact content for the user.
+
+        Used by upload to short-circuit re-uploads of the same binary, which
+        previously inflated the user's `analyses_count` by creating duplicate
+        rows + duplicate analyses runs.
+        """
+        stmt = (
+            select(FitsFileModel)
+            .where(FitsFileModel.owner_id == owner_id)
+            .where(FitsFileModel.content_hash == content_hash)
+            .order_by(FitsFileModel.created_at.desc())
+            .limit(1)
+        )
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()

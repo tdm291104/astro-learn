@@ -46,7 +46,7 @@ type Screen = "config" | "running" | "results";
 
 export function QuizRunner({ notebookId }: { notebookId: string }) {
   const [screen, setScreen] = useState<Screen>("config");
-  const [config, setConfig] = useState<Required<QuizRequest>>({
+  const [config, setConfig] = useState<Required<Omit<QuizRequest, "language">>>({
     n_questions: DEFAULT_QUESTIONS,
     difficulty: "medium",
   });
@@ -167,8 +167,8 @@ function ConfigScreen({
   onChange,
   onGenerate,
 }: {
-  config: Required<QuizRequest>;
-  onChange: (c: Required<QuizRequest>) => void;
+  config: Required<Omit<QuizRequest, "language">>;
+  onChange: (c: Required<Omit<QuizRequest, "language">>) => void;
   onGenerate: () => void;
 }) {
   const { t } = useT();

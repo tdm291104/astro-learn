@@ -25,6 +25,7 @@ from tools.astronomy.simbad_tool import SimbadTool
 from tools.astronomy.symbolic_checker_tool import SymbolicFitsCheckerTool
 from tools.astronomy.vizier_tool import VizierTool
 from tools.base_tool import BaseTool
+from tools.knowledge.notebook_metadata_tool import NotebookMetadataTool
 from tools.knowledge.pdf_parser_tool import PdfParserTool
 from tools.knowledge.vector_search_tool import VectorSearchTool
 from tools.knowledge.web_search_tool import WebSearchTool
@@ -136,13 +137,32 @@ class DefaultAgentFactory:
         if agent_name == "image_processor":
             return [self._fits_reader(), self._astropy()]
         if agent_name == "orchestrator":
-            return [self._nasa_api(), self._web_search()]
-        if agent_name in {"qa", "summarizer", "quiz", "flashcard"}:
+            base: list[BaseTool] = [self._nasa_api(), self._web_search()]
+            metadata = self._notebook_metadata()
+            if metadata is not None:
+                base.append(metadata)
+            return base
+        if agent_name == "qa":
+            tools: list[BaseTool] = [self._vector_search()]
+            metadata = self._notebook_metadata()
+            if metadata is not None:
+                tools.append(metadata)
+            return tools
+        if agent_name in {"summarizer", "quiz", "flashcard"}:
             return [self._vector_search()]
         return []
 
     def _vector_search(self) -> VectorSearchTool:
         return VectorSearchTool(store=self.vector_store)
+
+    def _notebook_metadata(self) -> NotebookMetadataTool | None:
+        """Built only when a session_factory is available (skipped in tests)."""
+        if self.session_factory is None:
+            return None
+        return NotebookMetadataTool(
+            session_factory=self.session_factory,
+            vector_store=self.vector_store,
+        )
 
     def _pdf_parser(self) -> PdfParserTool:
         # Not wired into agents; worker uses directly. Kept for symmetry/tests.

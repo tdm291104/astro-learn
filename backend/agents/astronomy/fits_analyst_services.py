@@ -50,6 +50,15 @@ class FitsAnalystServicesProtocol(Protocol):
     ) -> None:
         ...
 
+    async def load_recent_succeeded_analyses(
+        self,
+        owner_id: uuid.UUID,
+        file_id: uuid.UUID,
+        *,
+        limit: int = 5,
+    ) -> list[dict[str, Any]]:
+        ...
+
 
 class DefaultFitsAnalystServices:
     """Production implementation backed by SQLAlchemy + AstronomyService."""
@@ -183,3 +192,32 @@ class DefaultFitsAnalystServices:
                 return
             await repo.set_interpretation(analysis_id, interpretation)
             await session.commit()
+
+    async def load_recent_succeeded_analyses(
+        self,
+        owner_id: uuid.UUID,
+        file_id: uuid.UUID,
+        *,
+        limit: int = 5,
+    ) -> list[dict[str, Any]]:
+        """Newest-first succeeded analyses for the 'discuss prior' intent."""
+        async with self._session_factory() as session:
+            repo = AnalysisRepository(session)
+            rows = await repo.list_succeeded_for_file(file_id, limit=limit)
+            out: list[dict[str, Any]] = []
+            for row in rows:
+                # Defence-in-depth: skip cross-owner rows even though file_id
+                # already scoped via upload.
+                if row.owner_id != owner_id:
+                    continue
+                out.append({
+                    "analysis_id": str(row.id),
+                    "analysis_type": row.analysis_type,
+                    "hdu_index": row.hdu_index,
+                    "results": row.results,
+                    "interpretation": row.interpretation,
+                    "finished_at": row.finished_at.isoformat()
+                    if row.finished_at
+                    else None,
+                })
+            return out

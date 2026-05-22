@@ -108,6 +108,8 @@ export type SummarizeStyle = "bullets" | "paragraph";
 export type SummarizeRequest = {
   max_bullets?: number; // 3–20, default 7
   style?: SummarizeStyle; // default "bullets"
+  // FE i18n locale pins output language regardless of source-doc language.
+  language?: string;
 };
 
 // `summary` is a string for paragraph style, an array of bullets otherwise.
@@ -128,6 +130,7 @@ export type QuizItem = {
 export type QuizRequest = {
   n_questions?: number; // 1–30, default 5
   difficulty?: QuizDifficulty; // default "medium"
+  language?: string;
 };
 
 export type QuizResponse = {
@@ -141,6 +144,7 @@ export type Flashcard = {
 
 export type FlashcardRequest = {
   n_cards?: number; // 1–50, default 10
+  language?: string;
 };
 
 export type FlashcardResponse = {

@@ -195,12 +195,20 @@ class CatalogAgent(BaseAgent):
                 code="invalid_task",
             )
 
-        source = task.get("source", "simbad")
+        # Normalize case so a planner LLM that hallucinates "SIMBAD" /
+        # "Simbad" doesn't crash the run. The valid-source check still
+        # catches genuinely unknown values.
+        raw_source = task.get("source", "simbad")
+        source = (
+            raw_source.lower().strip()
+            if isinstance(raw_source, str)
+            else raw_source
+        )
         if source not in _VALID_SOURCES:
             raise AgentError(
-                message=f"Unknown catalog source: {source!r}",
+                message=f"Unknown catalog source: {raw_source!r}",
                 code="invalid_task",
-                details={"source": source, "valid": sorted(_VALID_SOURCES)},
+                details={"source": raw_source, "valid": sorted(_VALID_SOURCES)},
             )
 
         radius_arcsec = task.get("radius_arcsec")

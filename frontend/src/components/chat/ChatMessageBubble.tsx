@@ -24,6 +24,7 @@ import {
   type CatalogGrounding,
   type ChatMessage,
   type ChatMode,
+  type WebSearchResult,
   useChatStore,
 } from "@/stores/chatStore";
 import { type NotebookTool, useUiStore } from "@/stores/uiStore";
@@ -350,6 +351,9 @@ function AssistantBubble({
         {message.catalogGrounding && (
           <CatalogGroundingFooter grounding={message.catalogGrounding} />
         )}
+        {message.webSearchResults && message.webSearchResults.length > 0 && (
+          <WebSearchResultsList results={message.webSearchResults} />
+        )}
         {message.confirmWebSearch && (
           <ConfirmWebSearchPrompt
             query={message.confirmWebSearch.query}
@@ -671,6 +675,64 @@ function CatalogGroundingFooter({ grounding }: { grounding: CatalogGrounding }) 
         </div>
       )}
     </div>
+  );
+}
+
+function hostFromUrl(url: string): string {
+  try {
+    return new URL(url).host.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
+
+function WebSearchResultsList({ results }: { results: WebSearchResult[] }) {
+  return (
+    <ul className="space-y-1.5">
+      {results.map((r, idx) => (
+        <li
+          key={`${r.url}-${idx}`}
+          className="rounded-md px-3 py-2 transition-colors"
+          style={{
+            background: "rgba(96,165,250,0.05)",
+            border: "1px solid rgba(96,165,250,0.18)",
+          }}
+        >
+          <a
+            href={r.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-exo2 group flex flex-col gap-1"
+          >
+            <span
+              className="flex items-baseline gap-1.5 text-sm group-hover:underline"
+              style={{ color: "var(--accent-blue)" }}
+            >
+              <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
+              <span className="break-words">{r.title}</span>
+            </span>
+            <span
+              className="font-space-mono text-[10px] uppercase"
+              style={{
+                color: "var(--text-muted)",
+                letterSpacing: "0.14em",
+              }}
+            >
+              {hostFromUrl(r.url)}
+              {r.source ? ` · ${r.source}` : ""}
+            </span>
+            {r.snippet && (
+              <span
+                className="text-xs"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                {r.snippet}
+              </span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
   );
 }
 

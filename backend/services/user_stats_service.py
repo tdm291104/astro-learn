@@ -30,11 +30,15 @@ class UserStatsService:
 
     async def summary(self, user_id: uuid.UUID) -> UserStatsResponse:
         """Return all four dashboard counts."""
+        # `analyses_count` is exposed as "FITS analyzed" on the dashboard, so
+        # count DISTINCT files that received at least one analysis — not raw
+        # analysis rows (which inflate when the same file is re-analyzed and,
+        # historically, when the same upload created dup file rows).
         notebooks, documents, fits, analyses = await asyncio.gather(
             self.notebooks.count(owner_id=user_id),
             self.documents.count(owner_id=user_id),
             self.fits_files.count(owner_id=user_id),
-            self.analyses.count(owner_id=user_id),
+            self.analyses.count_distinct_files(user_id),
         )
         return UserStatsResponse(
             notebooks_count=notebooks,

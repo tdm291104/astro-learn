@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 
 import { notebookService } from "@/services/notebookService";
+import { useLocaleStore } from "@/stores/localeStore";
 import { useSessionStore } from "@/stores/sessionStore";
 import type {
   FlashcardRequest,
@@ -79,7 +80,8 @@ export function useSummarizeMutation(notebookId: string) {
   const qc = useQueryClient();
 
   return useMutation<SummarizeResponse, unknown, SummarizeRequest>({
-    mutationFn: (body) => notebookService.summarize(notebookId, body),
+    mutationFn: (body) =>
+      notebookService.summarize(notebookId, withLocale(body)),
     onSuccess: (resp, variables) => {
       qc.setQueryData(qaKeys.summary(notebookId, variables), resp);
       qc.invalidateQueries({
@@ -95,7 +97,8 @@ export function useSummarizeMutation(notebookId: string) {
 export function useGenerateQuizMutation(notebookId: string) {
   const qc = useQueryClient();
   return useMutation<QuizResponse, unknown, QuizRequest>({
-    mutationFn: (body) => notebookService.generateQuiz(notebookId, body),
+    mutationFn: (body) =>
+      notebookService.generateQuiz(notebookId, withLocale(body)),
     onSuccess: () => {
       qc.invalidateQueries({
         queryKey: qaKeys.artifact(notebookId, "quiz"),
@@ -110,7 +113,8 @@ export function useGenerateQuizMutation(notebookId: string) {
 export function useGenerateFlashcardsMutation(notebookId: string) {
   const qc = useQueryClient();
   return useMutation<FlashcardResponse, unknown, FlashcardRequest>({
-    mutationFn: (body) => notebookService.generateFlashcards(notebookId, body),
+    mutationFn: (body) =>
+      notebookService.generateFlashcards(notebookId, withLocale(body)),
     onSuccess: () => {
       qc.invalidateQueries({
         queryKey: qaKeys.artifact(notebookId, "flashcards"),
@@ -120,4 +124,11 @@ export function useGenerateFlashcardsMutation(notebookId: string) {
       toast.error(extractError(err, "Flashcard generation failed"));
     },
   });
+}
+
+// Inject FE i18n locale so notebook tool outputs mirror the UI language
+// regardless of source-doc language. Caller can still override.
+function withLocale<T extends { language?: string }>(body: T): T {
+  if (body.language) return body;
+  return { ...body, language: useLocaleStore.getState().locale };
 }

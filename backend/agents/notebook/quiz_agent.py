@@ -17,7 +17,7 @@ from agents.notebook._citations import chunks_to_citations
 from agents.support.validator_agent import ValidatorAgent
 from core.exceptions import AgentError
 from core.llm.llm_client import LLMClient
-from core.llm.prompt_templates import QUIZ_GENERATOR, render
+from core.llm.prompt_templates import QUIZ_GENERATOR, language_directive, render
 from schemas.notebook_schema import QuizResponse
 from tools.base_tool import BaseTool
 
@@ -109,6 +109,13 @@ class QuizAgent(BaseAgent):
                 ),
                 code="invalid_task",
             )
+        language = task.get("language") or task.get("locale")
+        raw_filenames = task.get("source_filenames")
+        source_filenames = (
+            [str(f) for f in raw_filenames if isinstance(f, str) and f]
+            if isinstance(raw_filenames, list)
+            else []
+        )
 
         tool = self.get_tool("vector_search")
         if tool is None:
@@ -145,7 +152,11 @@ class QuizAgent(BaseAgent):
             "subtlety accordingly."
             + f"\n\n{_QUIZ_JSON_SHAPE}"
         )
-        user_prompt = f"Source material:\n{source}"
+        lang_clause = language_directive(language)
+        if lang_clause:
+            system_prompt = f"{system_prompt}\n\n{lang_clause}"
+        context_block = _format_source_context(source_filenames, kind="questions")
+        user_prompt = f"{context_block}Source material:\n{source}"
 
         # Higher temp than QA: MCQs benefit from distractor variety.
         raw = await self.llm.complete(
@@ -234,6 +245,27 @@ class QuizAgent(BaseAgent):
                 message=f"Invalid notebook_id: {raw!r}",
                 code="invalid_task",
             ) from exc
+
+
+def _format_source_context(filenames: list[str], *, kind: str) -> str:
+    """Anchoring preamble so the LLM knows which doc(s) the chunks belong to."""
+    if not filenames:
+        return ""
+    if len(filenames) == 1:
+        return (
+            f"You are generating {kind} from ONE paper: {filenames[0]!r}.\n"
+            "All output must come from THIS paper's own content. If the "
+            "source includes a references/bibliography section, ignore the "
+            "cited works — they are background, not the paper itself.\n\n"
+        )
+    joined = ", ".join(repr(f) for f in filenames[:5])
+    extra = f" (and {len(filenames) - 5} more)" if len(filenames) > 5 else ""
+    return (
+        f"You are generating {kind} from {len(filenames)} documents: "
+        f"{joined}{extra}.\n"
+        "Output must come from what these documents themselves say. "
+        "Do not draw from references they cite.\n\n"
+    )
 
 
 def _build_numbered_source(

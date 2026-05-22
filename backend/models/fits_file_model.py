@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from sqlalchemy import BigInteger, ForeignKey, Integer, String, Text, Uuid
+from sqlalchemy import BigInteger, ForeignKey, Index, Integer, String, Text, Uuid
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -38,3 +38,14 @@ class FitsFileModel(Base, IdMixin, TimestampMixin):
 
     status: Mapped[str] = mapped_column(String(32), default="parsed", nullable=False)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # SHA-256 hex of the raw file bytes. Used to dedupe re-uploads of the
+    # same content by the same owner (FE was merging duplicates visually
+    # while the backend kept N rows + N analyses, inflating the user's
+    # "FITS analyzed" count). Nullable for legacy rows that predate this
+    # column; new uploads always populate it.
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    __table_args__ = (
+        Index("ix_fits_files_owner_hash", "owner_id", "content_hash"),
+    )

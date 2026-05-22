@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 import uuid
@@ -110,6 +111,24 @@ class AstronomyService:
                 code="unsupported_fits_type",
             )
 
+        # Dedup re-uploads of identical content by the same owner BEFORE
+        # writing to disk or parsing. Previously the same binary uploaded
+        # twice produced two FITS rows + two analysis rows, inflating the
+        # user's "FITS analyzed" count and creating ghost duplicates the FE
+        # tried to merge visually.
+        content_hash = hashlib.sha256(content).hexdigest()
+        existing = await self.fits_files.find_by_owner_hash(owner_id, content_hash)
+        if existing is not None:
+            return FitsUploadResponse(
+                file_id=existing.id,
+                filename=existing.filename,
+                size_bytes=existing.size_bytes,
+                hdu_count=existing.hdu_count,
+                hdus=[FitsHduSummary(**h) for h in (existing.hdus or [])],
+                primary_headers=existing.primary_headers,
+                header_summary=existing.header_summary,
+            )
+
         file_id = uuid.uuid4()
         storage_path = f"fits/{file_id}{_CANONICAL_FITS_EXTENSION}"
         disk_target = self.storage_root / storage_path
@@ -162,6 +181,7 @@ class AstronomyService:
                 "primary_headers": primary_headers,
                 "header_summary": header_summary,
                 "status": "parsed",
+                "content_hash": content_hash,
             }
         )
 

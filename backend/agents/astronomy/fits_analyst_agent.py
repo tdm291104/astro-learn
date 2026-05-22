@@ -6,7 +6,7 @@ import json
 import re
 import uuid
 from collections.abc import AsyncIterator
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Final, Literal
 
 from agents.astronomy.fits_analyst_services import FitsAnalystServicesProtocol
 from agents.astronomy.fits_decision import infer_analysis_types
@@ -71,6 +71,60 @@ def _is_metadata_only_query(query: str | None) -> bool:
         # Explicit override wins over the fast path.
         return False
     return bool(_METADATA_ONLY_RE.search(query))
+
+
+# Intent classification — used to skip the heavy report-style interpretation
+# when the user just wants an analysis (or wants to discuss a prior one).
+FitsIntent = Literal["qa", "analyze", "report", "discuss"]
+
+
+# Explicit "make me a report" verbs (EN + VN). Triggers the full structured
+# `fits_interpretation` JSON output the FE renders as a report card.
+_REPORT_INTENT_RE: Final[re.Pattern[str]] = re.compile(
+    r"\b(?:generate|create|make|build|produce|export|write|render)\s+"
+    r"(?:a\s+|the\s+|detailed\s+|full\s+)?(?:report|analysis\s+report)\b"
+    r"|\bdetailed\s+(?:analysis\s+)?report\b"
+    r"|\bfull\s+report\b"
+    r"|\breport\s+(?:please|me|now|đi)\b"
+    r"|t[ạa]o\s+(?:một\s+)?(?:b[áa]o\s+c[áa]o|report)"
+    r"|xu[ấa]t\s+(?:b[áa]o\s+c[áa]o|report)"
+    r"|vi[ếe]t\s+b[áa]o\s+c[áa]o"
+    r"|b[áa]o\s+c[áa]o\s+(?:chi\s*ti[ếe]t|đ[ầa]y\s+đ[ủu]|đi)",
+    re.IGNORECASE,
+)
+
+# "Discuss the previous analysis" intent (no new analysis runs).
+_DISCUSS_INTENT_RE: Final[re.Pattern[str]] = re.compile(
+    r"\b(?:previous|prior|last|earlier|existing)\s+"
+    r"(?:analysis|analyses|result|results|report)\b"
+    r"|\b(?:discuss|explain|interpret|talk\s+about|elaborate\s+on)\s+"
+    r"(?:the\s+)?(?:previous|prior|last|earlier|existing)\b"
+    r"|ph[âa]n\s+t[íi]ch\s+(?:tr[ưu][ớo]c\s+đ[óo]|tr[ưu][ớo]c|tr[ưu][ớo]c\s+đây|c[ũu])"
+    r"|k[ếe]t\s+qu[ảa]\s+(?:tr[ưu][ớo]c|tr[ưu][ớo]c\s+đ[óo]|l[ầa]n\s+tr[ưu][ớo]c|c[ũu])"
+    r"|b[áa]o\s+c[áa]o\s+(?:tr[ưu][ớo]c|tr[ưu][ớo]c\s+đ[óo]|c[ũu])"
+    r"|gi[ảa]i\s+th[íi]ch\s+(?:k[ếe]t\s+qu[ảa]|ph[âa]n\s+t[íi]ch)\s+(?:tr[ưu][ớo]c|c[ũu])",
+    re.IGNORECASE,
+)
+
+
+def _classify_intent(query: str | None) -> FitsIntent:
+    """Map free-form chat to one of the four FITS intents.
+
+    Order matters — explicit verbs win over the metadata-only fast path,
+    otherwise "kết quả lần trước về exposure?" gets misclassified as `qa`
+    because the keyword `exposure` matches the header-only regex. Default
+    switched from `report` to `analyze` because the report-style structured
+    JSON was overkill for every ad-hoc chat turn.
+    """
+    if not query:
+        return "analyze"
+    if _REPORT_INTENT_RE.search(query):
+        return "report"
+    if _DISCUSS_INTENT_RE.search(query):
+        return "discuss"
+    if _is_metadata_only_query(query):
+        return "qa"
+    return "analyze"
 
 
 @AgentRegistry.register
@@ -173,8 +227,18 @@ class FitsAnalystAgent(BaseAgent):
             }
             return
 
+        # Intent gate — pick a flow before paying for analysis runs.
+        # `intent` from the caller wins so the FE can force a particular mode
+        # via a button (e.g. "Generate report"); else we sniff the question.
+        raw_intent = task.get("intent")
+        intent: FitsIntent = (
+            raw_intent  # type: ignore[assignment]
+            if raw_intent in ("qa", "analyze", "report", "discuss")
+            else _classify_intent(user_query)
+        )
+
         # Fast path: header-only queries skip Celery analysis.
-        if _is_metadata_only_query(user_query):
+        if intent == "qa":
             yield _heartbeat("interpreting")
             answer = await self._answer_from_header(
                 filename=filename,
@@ -185,7 +249,7 @@ class FitsAnalystAgent(BaseAgent):
                 role="assistant",
                 name=self.name,
                 content=answer,
-                extra={"phase": "header_lookup"},
+                extra={"phase": "header_lookup", "fits_intent": intent},
             )
             state.append(final_msg)
             yield final_msg
@@ -193,7 +257,22 @@ class FitsAnalystAgent(BaseAgent):
                 "answer": answer,
                 "header_summary": header_summary,
                 "fast_path": "header_lookup",
+                "fits_intent": intent,
             }
+            return
+
+        # Discuss intent: don't run new analyses. Load the most recent
+        # succeeded analysis (if any) and answer conversationally.
+        if intent == "discuss":
+            async for msg in self._handle_discuss(
+                owner_id=owner_id,
+                file_id=file_id,
+                filename=filename,
+                header_summary=header_summary,
+                user_query=user_query or "Discuss the previous analysis.",
+                state=state,
+            ):
+                yield msg
             return
 
         analysis_types, reasoning = _resolve_decision(
@@ -278,41 +357,81 @@ class FitsAnalystAgent(BaseAgent):
             yield tool_msg
 
         yield _heartbeat("interpreting")
-        interpretation = await self._interpret(
+        if intent == "report":
+            interpretation = await self._interpret(
+                filename=filename,
+                header_summary=header_summary,
+                decision=decision_payload,
+                successful_runs=successful_runs,
+                user_query=user_query,
+            )
+
+            # Symbolic checker catches anomalies the LLM misses.
+            yield _heartbeat("critiquing")
+            reflexion_meta, refined_interpretation = await self._reflexion_pass(
+                file_id=file_id,
+                interpretation=interpretation,
+            )
+            interpretation = refined_interpretation
+            interpretation["reflexion"] = reflexion_meta.model_dump()
+
+            # Persist on every row so FE's activeAnalysisId always finds it.
+            for aid in run_analysis_ids:
+                await self._services.persist_interpretation(
+                    owner_id, aid, interpretation
+                )
+
+            final_msg = AgentMessage(
+                role="assistant",
+                name=self.name,
+                content=_summary_paragraph(interpretation),
+                extra={
+                    "fits_interpretation": interpretation,
+                    "fits_intent": intent,
+                },
+            )
+            state.append(final_msg)
+            yield final_msg
+
+            state.final_output = {
+                "interpretation": interpretation,
+                "analysis_ids": [str(aid) for aid in run_analysis_ids],
+                "fits_intent": intent,
+            }
+            return
+
+        # analyze intent — prose response in the user's language, no
+        # structured report card. Symbolic checker still runs because the
+        # anomalies are useful to mention inline.
+        yield _heartbeat("critiquing")
+        violations = await self._collect_violations(file_id)
+        prose = await self._interpret_prose(
             filename=filename,
             header_summary=header_summary,
             decision=decision_payload,
             successful_runs=successful_runs,
+            violations=violations,
             user_query=user_query,
         )
-
-        # Symbolic checker catches anomalies the LLM misses (NaN, EXPTIME, WCS).
-        yield _heartbeat("critiquing")
-        reflexion_meta, refined_interpretation = await self._reflexion_pass(
-            file_id=file_id,
-            interpretation=interpretation,
-        )
-        interpretation = refined_interpretation
-        interpretation["reflexion"] = reflexion_meta.model_dump()
-
-        # Persist on every row so FE's activeAnalysisId always finds it.
-        for aid in run_analysis_ids:
-            await self._services.persist_interpretation(
-                owner_id, aid, interpretation
-            )
 
         final_msg = AgentMessage(
             role="assistant",
             name=self.name,
-            content=_summary_paragraph(interpretation),
-            extra={"fits_interpretation": interpretation},
+            content=prose,
+            extra={
+                "fits_intent": intent,
+                "analysis_ids": [str(aid) for aid in run_analysis_ids],
+                "violation_count": len(violations),
+            },
         )
         state.append(final_msg)
         yield final_msg
 
         state.final_output = {
-            "interpretation": interpretation,
+            "answer": prose,
             "analysis_ids": [str(aid) for aid in run_analysis_ids],
+            "violations": violations,
+            "fits_intent": intent,
         }
 
     async def _answer_from_header(
@@ -436,6 +555,200 @@ class FitsAnalystAgent(BaseAgent):
             successful_runs=successful_runs,
             errors=last_errors,
         ).model_dump()
+
+    async def _collect_violations(
+        self, file_id: uuid.UUID
+    ) -> list[dict[str, Any]]:
+        """Run the symbolic checker; return its violation list (may be empty)."""
+        if self._symbolic_checker is None:
+            return []
+        try:
+            check = await self._symbolic_checker.execute(file_id=file_id)
+        except Exception:  # noqa: BLE001 — checker is best-effort
+            return []
+        raw = check.get("violations") or []
+        return [v for v in raw if isinstance(v, dict)]
+
+    async def _interpret_prose(
+        self,
+        *,
+        filename: str,
+        header_summary: dict[str, Any],
+        decision: dict[str, Any],
+        successful_runs: list[dict[str, Any]],
+        violations: list[dict[str, Any]],
+        user_query: str | None,
+    ) -> str:
+        """Conversational analyst voice — used for the default `analyze` intent.
+
+        The LLM receives the raw analysis output AND a directive to write
+        like a working astronomer (units, comparisons to typical values,
+        named anomalies) rather than a templated report. No JSON validation
+        — we just take the prose back. Hallucination guard tells it to skip
+        invented numbers.
+        """
+        header_block = build_fits_header_block(header_summary)
+        raw_results_json = json.dumps(
+            {
+                "decision": decision,
+                "results": successful_runs,
+                "violations": violations,
+            },
+            default=str,
+        )
+        system_prompt = (
+            "You are AstroLearn, a senior astronomy data analyst speaking "
+            "directly to the user about THEIR FITS file. Write in flowing "
+            "prose (2-5 short paragraphs or a tight bullet list — your "
+            "choice based on how many results there are). Use the analyst "
+            "voice: name the analysis types performed, state the actual "
+            "numeric values with units, compare against typical / expected "
+            "ranges where you can defend the comparison from the header "
+            "context, and call out anomalies plainly.\n\n"
+            "STRICT GROUNDING:\n"
+            "- Only cite numbers that appear in the raw_results JSON. "
+            "Never invent metrics, calibration values, or instrument lore.\n"
+            "- If a result is missing or null, say so — don't paper over it.\n"
+            "- Anomalies listed under `violations` are non-negotiable: "
+            "surface every error-severity one.\n"
+            "- Don't open with 'Sure!' / 'I will…' / generic preamble. "
+            "Lead with the most interesting finding.\n\n"
+            "ALWAYS reply in the same natural language as the user's "
+            "question."
+        )
+        user_directive_parts: list[str] = [
+            f"Filename: {filename}",
+            header_block,
+            f"\nRaw analysis output (the data to interpret):\n{raw_results_json}",
+        ]
+        if user_query:
+            user_directive_parts.append(
+                f"\nUser's question (mirror this language and answer it directly):\n{user_query}"
+            )
+        else:
+            user_directive_parts.append(
+                "\nNo explicit question — give the user a working analyst's "
+                "read of what they uploaded."
+            )
+
+        try:
+            raw = await self.llm.complete(
+                [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": "\n".join(user_directive_parts)},
+                ],
+                temperature=0.3,
+                max_tokens=900,
+            )
+        except Exception:  # noqa: BLE001 — graceful prose fallback
+            return _prose_fallback(
+                filename, successful_runs, violations,
+            )
+        text = (raw or "").strip()
+        return text or _prose_fallback(
+            filename, successful_runs, violations,
+        )
+
+    async def _handle_discuss(
+        self,
+        *,
+        owner_id: uuid.UUID,
+        file_id: uuid.UUID,
+        filename: str,
+        header_summary: dict[str, Any],
+        user_query: str,
+        state: AgentState,
+    ) -> AsyncIterator[AgentMessage]:
+        """Conversational reply over the most recent succeeded analysis.
+
+        No new analysis runs; loads prior results from the analyses table.
+        If there is no prior succeeded analysis, tell the user to run one
+        first instead of silently falling through to a fresh pipeline.
+        """
+        yield _heartbeat("loading_prior")
+        try:
+            prior = await self._services.load_recent_succeeded_analyses(
+                owner_id, file_id, limit=5,
+            )
+        except Exception:  # noqa: BLE001 — never crash chat on a DB blip
+            prior = []
+
+        if not prior:
+            text = (
+                "Em chưa thấy phân tích nào trước đó cho file này. "
+                "Bạn chạy phân tích trước (ví dụ: 'phân tích file này'), "
+                "rồi quay lại đây để cùng thảo luận kết quả nhé."
+            )
+            no_prior = AgentMessage(
+                role="assistant",
+                name=self.name,
+                content=text,
+                extra={"fits_intent": "discuss", "no_prior": True},
+            )
+            state.append(no_prior)
+            yield no_prior
+            state.final_output = {
+                "answer": text,
+                "fits_intent": "discuss",
+                "no_prior": True,
+            }
+            return
+
+        # Compact payload: dump results + any persisted interpretation so the
+        # LLM has both raw numbers and prior structured insight.
+        prior_json = json.dumps(prior, default=str)
+        header_block = build_fits_header_block(header_summary)
+        system_prompt = (
+            "You are AstroLearn, an astronomy analyst discussing PRIOR "
+            "analyses the user already ran on this FITS file. Do NOT invent "
+            "new analyses; use only the structured prior_analyses payload. "
+            "Speak conversationally — answer the user's question directly "
+            "by citing values from the prior results and anomalies. If the "
+            "question asks for something the prior results don't cover, "
+            "say what additional analysis would be needed.\n\n"
+            "ALWAYS reply in the same natural language as the user's question."
+        )
+        user_prompt = (
+            f"Filename: {filename}\n{header_block}\n\n"
+            f"Prior analyses (JSON):\n{prior_json}\n\n"
+            f"User's question:\n{user_query}"
+        )
+
+        yield _heartbeat("interpreting")
+        try:
+            raw = await self.llm.complete(
+                [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.3,
+                max_tokens=800,
+            )
+        except Exception:  # noqa: BLE001
+            raw = ""
+        text = (raw or "").strip()
+        if not text:
+            text = (
+                "Em không tóm tắt được kết quả phân tích trước lúc này. "
+                "Bạn thử lại sau nhé."
+            )
+
+        final_msg = AgentMessage(
+            role="assistant",
+            name=self.name,
+            content=text,
+            extra={
+                "fits_intent": "discuss",
+                "prior_analysis_count": len(prior),
+            },
+        )
+        state.append(final_msg)
+        yield final_msg
+        state.final_output = {
+            "answer": text,
+            "fits_intent": "discuss",
+            "prior_analyses": prior,
+        }
 
     async def _reflexion_pass(
         self,
@@ -687,6 +1000,35 @@ def _metrics_from_raw_results(raw_results: dict[str, Any]) -> list[Any]:
             )
         )
     return out
+
+
+def _prose_fallback(
+    filename: str,
+    successful_runs: list[dict[str, Any]],
+    violations: list[dict[str, Any]],
+) -> str:
+    """Deterministic prose when the LLM call fails or returns empty."""
+    lines: list[str] = [f"Analysed {filename}:"]
+    for run in successful_runs:
+        atype = run.get("analysis_type") or "analysis"
+        payload = run.get("payload") or {}
+        results = payload.get("results") or {}
+        if not isinstance(results, dict) or not results:
+            lines.append(f"- {atype}: completed (no numeric metrics returned).")
+            continue
+        # Take up to 4 scalar metrics so the fallback stays readable.
+        rendered: list[str] = []
+        for k, v in list(results.items())[:4]:
+            if isinstance(v, (int, float, str)):
+                rendered.append(f"{k}={v}")
+        joined = ", ".join(rendered) if rendered else "see raw payload"
+        lines.append(f"- {atype}: {joined}.")
+    for v in violations[:5]:
+        sev = v.get("severity", "info")
+        msg = v.get("message", "")
+        if msg:
+            lines.append(f"- [{sev}] {msg}")
+    return "\n".join(lines)
 
 
 def _format_violation_line(violation: dict[str, Any]) -> str:
